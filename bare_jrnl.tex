@@ -1,65 +1,4 @@
-
-%% bare_jrnl.tex
-%% V1.4b
-%% 2015/08/26
-%% by Michael Shell
-%% see http://www.michaelshell.org/
-%% for current contact information.
-%%
-%% This is a skeleton file demonstrating the use of IEEEtran.cls
-%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
-%% journal paper.
-%%
-%% Support sites:
-%% http://www.michaelshell.org/tex/ieeetran/
-%% http://www.ctan.org/pkg/ieeetran
-%% and
-%% http://www.ieee.org/
-
-%%*************************************************************************
-%% Legal Notice:
-%% This code is offered as-is without any warranty either expressed or
-%% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE! 
-%% User assumes all risk.
-%% In no event shall the IEEE or any contributor to this code be liable for
-%% any damages or losses, including, but not limited to, incidental,
-%% consequential, or any other damages, resulting from the use or misuse
-%% of any information contained here.
-%%
-%% All comments are the opinions of their respective authors and are not
-%% necessarily endorsed by the IEEE.
-%%
-%% This work is distributed under the LaTeX Project Public License (LPPL)
-%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
-%% distributed and modified. A copy of the LPPL, version 1.3, is included
-%% in the base LaTeX documentation of all distributions of LaTeX released
-%% 2003/12/01 or later.
-%% Retain all contribution notices and credits.
-%% ** Modified files should be clearly indicated as such, including  **
-%% ** renaming them and changing author support contact information. **
-%%*************************************************************************
-
-
-% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
-% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
-% *** with production work. The IEEE's font choices and paper sizes can   ***
-% *** trigger bugs that do not appear when using other class files.       ***                          ***
-% The testflow support page is at:
-% http://www.michaelshell.org/tex/testflow/
-
-
-
 \documentclass[journal]{IEEEtran}
-%
-% If IEEEtran.cls has not been installed into the LaTeX system files,
-% manually specify the path to it like:
-% \documentclass[journal]{../sty/IEEEtran}
-
-
-
-
-
 % Some very useful LaTeX packages include:
 % (uncomment the ones you want to load)
 
@@ -113,7 +52,7 @@
 % *** GRAPHICS RELATED PACKAGES ***
 %
 \ifCLASSINFOpdf
-  % \usepackage[pdftex]{graphicx}
+  \usepackage[pdftex]{graphicx}
   % declare the path(s) where your graphic files are
   % \graphicspath{{../pdf/}{../jpeg/}}
   % and their extensions so you won't have to specify these with
@@ -358,7 +297,7 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Bare Demo of IEEEtran.cls\\ for IEEE Journals}
+\title{Receiver-Guided Reinforcement Learning-based Congestion Control for IoT}
 %
 %
 % author names and IEEE memberships
@@ -370,20 +309,12 @@
 % was not built to handle multiple paragraphs
 %
 
-\author{Michael~Shell,~\IEEEmembership{Member,~IEEE,}
-        John~Doe,~\IEEEmembership{Fellow,~OSA,}
-        and~Jane~Doe,~\IEEEmembership{Life~Fellow,~IEEE}% <-this % stops a space
-\thanks{M. Shell was with the Department
-of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta,
-GA, 30332 USA e-mail: (see http://www.michaelshell.org/contact.html).}% <-this % stops a space
-\thanks{J. Doe and J. Doe are with Anonymous University.}% <-this % stops a space
-\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}}
-
-% note the % following the last \IEEEmembership and also \thanks - 
-% these prevent an unwanted space from occurring between the last author name
-% and the end of the author line. i.e., if you had this:
-% 
-% \author{....lastname \thanks{...} \thanks{...} }
+\author{
+Qihang~Jiao,~\IEEEmembership{Student Member,~IEEE,}
+and~Lotfi~Mhamdi,~\IEEEmembership{Senior Member,~IEEE}%
+\thanks{Qihang Jiao and Lotfi Mhamdi are with the School of Electronic and Electrical Engineering, University of Leeds, Leeds, UK (e-mail: el22qj@leeds.ac.uk; L.Mhamdi@leeds.ac.uk).}%
+\thanks{Lotfi Mhamdi is also with the College of Computing \& Systems, Abdullah Al Salem University, Kuwait (e-mail: lotfi.mhamdi@aasu.edu.kw).}
+}
 %                     ^------------^------------^----Do not want these spaces!
 %
 % a space would be appended to the last name and could cause every name on that
@@ -438,7 +369,7 @@ The abstract goes here.
 
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-IEEE, IEEEtran, journal, \LaTeX, paper, template.
+IoT, TCP, congestion control, reinforcement learning.
 \end{IEEEkeywords}
 
 
@@ -474,27 +405,95 @@ IEEE, IEEEtran, journal, \LaTeX, paper, template.
 % 
 % Here we have the typical use of a "T" for an initial drop letter
 % and "HIS" in caps to complete the first word.
-\IEEEPARstart{T}{his} demo file is intended to serve as a ``starter file''
-for IEEE journal papers produced under \LaTeX\ using
-IEEEtran.cls version 1.8b and later.
-% You must have at least 2 lines in the paragraph with the drop letter
-% (should never be an issue)
-I wish you the best of success.
+% \IEEEPARstart{T}{his} demo file is intended to serve as a ``starter file''
+% for IEEE journal papers produced under \LaTeX\ using
+% IEEEtran.cls version 1.8b and later.
+% % You must have at least 2 lines in the paragraph with the drop letter
+% % (should never be an issue)
+% I wish you the best of success.
+\IEEEPARstart{T}{his} part is to be completed.
 
-\hfill mds
+% \hfill mds
  
-\hfill August 26, 2015
+% \hfill August 26, 2015
 
-\subsection{Subsection Heading Here}
-Subsection text here.
+% \subsection{Subsection Heading Here}
+% Subsection text here.
 
-% needed in second column of first page if using \IEEEpubid
-%\IEEEpubidadjcol
+% % needed in second column of first page if using \IEEEpubid
+% %\IEEEpubidadjcol
 
-\subsubsection{Subsubsection Heading Here}
-Subsubsection text here.
+% \subsubsection{Subsubsection Heading Here}
+% Subsubsection text here.
+
+\section{Related Works}
+
+\section{System Design}
+Our proposal contains three modules in the receiver side for adjusting sender CWND, Receiver Measurement Module, Window Decision Module, and Window Enforcement Module.
+Additionaly, TCP sockets in both sender and receiver are extended or modified for adding interfaces to achieved our features.
+
+\subsection{Message types definition}
+% The receiver TCP socket is extended to have features to communicate with our agent. We defined messages into three types 'state', 'action request', 'connection close' for agent to execute either store the states into its replay buffer, output an action, or clear the states for the closed connection.
+
+The receiver TCP socket is extended to support communication with the RL agent. 
+Three types of messages are defined:
+
+\begin{itemize}
+    \item \textbf{State}: carries the observed network state and is sent to the agent for storage in the replay buffer.
+    
+    \item \textbf{Action Request}: triggers the agent to infer and return a control action based on the current state.
+    
+    \item \textbf{Connection Close}: notifies the agent that a flow has terminated, allowing it to clear the corresponding internal states.
+\end{itemize}
+
+\subsection{Receiver Measurement Module}
+Our scheme relies on reliable state observations for a stable training. For a receiver, RTT is not able to be directly observed while it is valuable metric to measure the congestion extent of a network. We overcome this by extending the sender TCP socket to include their CWND in TCP header. 
+In standard TCP congestion avoidance, CC increases increase by approximately 1 MSS after a RTT, i.e., when an entire CWND bytes are acknowleged. We utilise this to enable the receiver to estimate RTT by calculating the elapsed time for a flow to complete its CWND. Therefore, upon every packet receive event that includes a CWND value different from the last value received, the Receiver Measurement Modules establishes a new estimation task. A new task is initialised with the current observations and a threshold, e.g., for flow $i$ at time $j$, defined as below:
+$$ \tau_{i,t_j} = Seq_{i, j_t} + cwnd_{i, j} $$
+An estimation task is complted when a coming packet with $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$, the $cwnd$ elapsed time is calculated as $t_{elapsed} = t_{i,j+\Delta} - t_{i, j}$. Then $t_{elapsed}$ along with other observations ($o_{i,t_{j+\Delta}}, o_{i,t_{j}}$) are processed to generate a state for training our RL Agent.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.9\columnwidth]{./fig/ReceiverMeasurementModule2.png}
+\caption{An example of estimation task completion of flow $i$.}
+\label{Estimation}
+\end{figure}
+
+% Our scheme relies on reliable state observations to ensure stable
+% training of the learning-based controller. While RTT is a valuable
+% indicator of network congestion, it is not explicitly exposed to the
+% receiver-side control logic. To address this limitation, we leverage
+% sender-side congestion information that can be inferred at the receiver.
+
+% Specifically, under AIMD-based congestion control, the congestion window
+% exhibits a characteristic linear growth behavior, increasing by
+% approximately one MSS over each round-trip time during congestion
+% avoidance. We exploit this property to estimate RTT at the receiver by
+% tracking the temporal evolution of the sender’s congestion window.
+
+% In our design, the receiver records the arrival time associated with
+% previously unseen congestion window values inferred from incoming packets.
+% When the congestion window increases by one MSS, the elapsed time is used
+% as an estimate of the RTT for the corresponding flow. This estimation
+% mechanism does not require additional probing traffic and operates on
+% existing transport-layer dynamics.
+
+% In addition to RTT estimation, the receiver continuously measures per-flow
+% goodput and packet loss statistics between successive receive events, which
+% together form the state input to the window decision module.
+
+\subsection{Window Decision Module}
+% action_block 这里写
+The states input is triggered by each receive event that is not able to be known when it happens. Also for the purpose to avoid the agent decision process blocking the normal TCP behaviour, we set a window decision maintained in the Receiver socket and updated periodically. The window decision is a value within $[0,1]$ and set in every ACK header to the sender.
+
+\subsection{Window Enforcement Module}
+The sender is modified to leverage the window decision as a factor to update its CWND as following:
+$$CWND \leftarrow CWND \times Scaling\_Factor ^ {Decision}$$
+
+\subsection{Enforcing Window Generation by RL Agent}
 
 
+\section{Simulation setup and results}
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
 % For figures, \caption should occur after the \includegraphics.
@@ -614,14 +613,14 @@ The conclusion goes here.
 %
 
 
-\appendices
-\section{Proof of the First Zonklar Equation}
-Appendix one text goes here.
+% \appendices
+% \section{Proof of the First Zonklar Equation}
+% Appendix one text goes here.
 
-% you can choose not to have a title for an appendix
-% if you want by leaving the argument blank
-\section{}
-Appendix two text goes here.
+% % you can choose not to have a title for an appendix
+% % if you want by leaving the argument blank
+% \section{}
+% Appendix two text goes here.
 
 
 % use section* for acknowledgment
@@ -680,22 +679,22 @@ H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
 %\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
 % or if you just want to reserve a space for a photo:
 
-\begin{IEEEbiography}{Michael Shell}
-Biography text here.
-\end{IEEEbiography}
+% \begin{IEEEbiography}{Michael Shell}
+% Biography text here.
+% \end{IEEEbiography}
 
-% if you will not have a photo at all:
-\begin{IEEEbiographynophoto}{John Doe}
-Biography text here.
-\end{IEEEbiographynophoto}
+% % if you will not have a photo at all:
+% \begin{IEEEbiographynophoto}{John Doe}
+% Biography text here.
+% \end{IEEEbiographynophoto}
 
 % insert where needed to balance the two columns on the last page with
 % biographies
 %\newpage
 
-\begin{IEEEbiographynophoto}{Jane Doe}
-Biography text here.
-\end{IEEEbiographynophoto}
+% \begin{IEEEbiographynophoto}{Jane Doe}
+% Biography text here.
+% \end{IEEEbiographynophoto}
 
 % You can push biographies down or up by placing
 % a \vfill before or after them. The appropriate

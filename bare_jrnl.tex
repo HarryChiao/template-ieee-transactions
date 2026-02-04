@@ -445,20 +445,26 @@ Three types of messages are defined:
 \end{itemize}
 
 \subsection{Receiver Measurement Module}
-Our scheme relies on reliable state observations for a stable training. For a receiver, RTT is not able to be directly observed while it is valuable metric to measure the congestion extent of a network. We overcome this by extending the sender TCP socket to include their $cwnd$ in TCP header. 
-In standard TCP congestion avoidance, CC increases increase by approximately 1 MSS after a RTT, i.e., when an entire $cwnd$ bytes are acknowleged. 
-We utilise this to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$. Therefore, upon every packet receive event that includes a $cwnd$ value different from the last value received, the Receiver Measurement Modules establishes a new estimation task. A new task is initialised with the current observations and a threshold, e.g., for flow $i$ at time $j$, defined as below:
-$$ \tau_{i,t_j} = Seq_{i, t_j} + cwnd_{i,t_j} $$
-An estimation task is completed when a coming packet is seen with $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$. The $cwnd$ elapsed time is calculated as $t_{elapsed} = t_{j+\Delta} - t_{j}$. Then $t_{elapsed}$ along with other observations are processed to generate a state for training our RL Agent. In observations, we maintain a cumulative received bytes, packet losses i.e., 
-an observation of flow $i$ at $t_j$ defined as follow:
-\begin{equation}
+Our scheme relies on reliable state observations to ensure stable training. Therefore, the states in our design are required to reflect the congestion extent while remaining observable at the receiver. Despite RTT is a fine-grained and valuable indicator of congestion, it is difficult to directly observe in the receiver side.
+
+To address this limitation, we derive a receiver-side congestion entent metric based on the $cwnd$ elapsed time. We extend the sender TCP feature to include its $cwnd$ in TCP header. 
+In standard TCP congestion avoidance, the congestion window $cwnd$ is increased by 1 MSS after an entire $cwnd$ bytes has been acknowledged, resulting in an approximate growth rate of 1 MSS per RTT, in which the method is named Additive Increment.
+
+We utilise Additive Increment growing feature to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$.
+In particular, upon every packet receive event that includes a $cwnd$ value different from the last value received, the Receiver Measurement Module establishes a new estimation task.
+ A new task is initialised with the current observation ($o$) and a threshold ($\tau$), e.g., for flow $i$ started at time $t_0$ and estimated at time $t_j$, defined as below:
+ \begin{equation}
   o_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]
 \end{equation} 
-$$B_i(t_j) = \sum_{n = 0}^{t_j} Rx Bytes_{i, n}$$
-$$L_i(t_j) = \sum_{n=0}^{t_j}Losses_{i, n}$$
-Then the goodput ($g_{i, t_j}$) and the packet loss rate ($\ell_{i,t_j}$) are calculated and formed a state message along with the $t_{elapsed}$. The state generation is defined as:
-$$ S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j}) = [g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}]$$
-where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$ and $\ell_{i,t_j} = \frac{L_i(t_{j+\Delta})-L_i(t_j)}{t_{elapsed}}$.
+$$B_i(t_j) = \sum_{n = t_0}^{t_j} Rx Bytes_{i, n}$$
+$$L_i(t_j) = \sum_{n= t_0}^{t_j}Losses_{i, n}$$
+\begin{equation}
+  \tau_{i,t_j} = Seq_{i, t_j} + cwnd_{i,t_j}
+\end{equation}
+An estimation task is completed at $t_{j+\Delta}$ when a coming packet is seen with a sequence number satisfying $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$.
+We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = t_{j+\Delta} - t_{j}$. The $t_{elapsed}$ is then used to calculate the goodput ($g_{i, t_j}$) and the packet loss rate ($\ell_{i,t_j}$) during the estimation task, where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$ and $\ell_{i,t_j} = \frac{L_i(t_{j+\Delta})-L_i(t_j)}{t_{elapsed}}$. We then form a state message according to $s_{i,t_j}=S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j})$, where the generation process is defined as follows:
+$$ S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j}) = \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
+The Receiver Measurement and State Generation process can be seen in Algorithm~\ref{alg:per_packet_state}.
 
 \begin{figure}[!t]
 \centering
@@ -470,7 +476,7 @@ where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$ and $\ell_{i
 \begin{algorithm}[t]
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
-\caption{Receiver Measurement and State Construction}
+\caption{Receiver Measurement and State Generation}
 \label{alg:per_packet_state}
 \begin{algorithmic}[1]
 \Require Flow Id $i$, Time $t_j$, Arrived Packet $p_{i,t_j}$, Flow Observation Queue $q_i$

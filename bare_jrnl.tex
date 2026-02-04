@@ -95,7 +95,7 @@
 
 % *** MATH PACKAGES ***
 %
-%\usepackage{amsmath}
+\usepackage{amsmath}
 % A popular package from the American Mathematical Society that provides
 % many useful and powerful commands for dealing with mathematics.
 %
@@ -106,14 +106,12 @@
 % does. amsmath.sty is already installed on most LaTeX systems. The latest
 % version and documentation can be obtained at:
 % http://www.ctan.org/pkg/amsmath
-
-
-
-
+\usepackage{amssymb}
 
 % *** SPECIALIZED LIST PACKAGES ***
-%
-%\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% \usepackage{algorithmic}
 % algorithmic.sty was written by Peter Williams and Rogerio Brito.
 % This package provides an algorithmic environment fo describing algorithms.
 % You can use the algorithmic environment in-text or within a figure
@@ -331,8 +329,8 @@ and~Lotfi~Mhamdi,~\IEEEmembership{Senior Member,~IEEE}%
 
 
 % The paper headers
-\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
-{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for IEEE Journals}
+% \markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
+% {Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for IEEE Journals}
 % The only time the second header will appear is for the odd numbered pages
 % after the title page when using the twoside option.
 % 
@@ -429,7 +427,7 @@ IoT, TCP, congestion control, reinforcement learning.
 \section{Related Works}
 
 \section{System Design}
-Our proposal contains three modules in the receiver side for adjusting sender CWND, Receiver Measurement Module, Window Decision Module, and Window Enforcement Module.
+Our proposal contains three modules in the receiver side for adjusting sender $cwnd$, Receiver Measurement Module, Window Decision Module, and Window Enforcement Module.
 Additionaly, TCP sockets in both sender and receiver are extended or modified for adding interfaces to achieved our features.
 
 \subsection{Message types definition}
@@ -447,48 +445,91 @@ Three types of messages are defined:
 \end{itemize}
 
 \subsection{Receiver Measurement Module}
-Our scheme relies on reliable state observations for a stable training. For a receiver, RTT is not able to be directly observed while it is valuable metric to measure the congestion extent of a network. We overcome this by extending the sender TCP socket to include their CWND in TCP header. 
-In standard TCP congestion avoidance, CC increases increase by approximately 1 MSS after a RTT, i.e., when an entire CWND bytes are acknowleged. We utilise this to enable the receiver to estimate RTT by calculating the elapsed time for a flow to complete its CWND. Therefore, upon every packet receive event that includes a CWND value different from the last value received, the Receiver Measurement Modules establishes a new estimation task. A new task is initialised with the current observations and a threshold, e.g., for flow $i$ at time $j$, defined as below:
-$$ \tau_{i,t_j} = Seq_{i, j_t} + cwnd_{i, j} $$
-An estimation task is complted when a coming packet with $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$, the $cwnd$ elapsed time is calculated as $t_{elapsed} = t_{i,j+\Delta} - t_{i, j}$. Then $t_{elapsed}$ along with other observations ($o_{i,t_{j+\Delta}}, o_{i,t_{j}}$) are processed to generate a state for training our RL Agent.
+Our scheme relies on reliable state observations for a stable training. For a receiver, RTT is not able to be directly observed while it is valuable metric to measure the congestion extent of a network. We overcome this by extending the sender TCP socket to include their $cwnd$ in TCP header. 
+In standard TCP congestion avoidance, CC increases increase by approximately 1 MSS after a RTT, i.e., when an entire $cwnd$ bytes are acknowleged. 
+We utilise this to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$. Therefore, upon every packet receive event that includes a $cwnd$ value different from the last value received, the Receiver Measurement Modules establishes a new estimation task. A new task is initialised with the current observations and a threshold, e.g., for flow $i$ at time $j$, defined as below:
+$$ \tau_{i,t_j} = Seq_{i, t_j} + cwnd_{i,t_j} $$
+An estimation task is completed when a coming packet is seen with $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$. The $cwnd$ elapsed time is calculated as $t_{elapsed} = t_{j+\Delta} - t_{j}$. Then $t_{elapsed}$ along with other observations are processed to generate a state for training our RL Agent. In observations, we maintain a cumulative received bytes, packet losses i.e., 
+an observation of flow $i$ at $t_j$ is defined as $o_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]$, where $B_i(t_j) = \sum_{n = 0}^{t_j} Rx Bytes_{i, n}$, and $L_i(t_j) = \sum_{n=0}^{t_j}Losses_{i, n}$. Then the goodput ($g_{i, t_j}$) and the packet loss rate ($\ell_{i,t_j}$) are calculated and formed a state message along with the $t_{elapsed}$. The state generation is defined as:
+$$ S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j}) = [g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}]$$
+where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$ and $\ell_{i,t_j} = \frac{L_i(t_{j+\Delta})-L_i(t_j)}{t_{elapsed}}$.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.9\columnwidth]{./fig/ReceiverMeasurementModule2.png}
+\includegraphics[width=\columnwidth]{./fig/ReceiverMeasurementModule2.png}
 \caption{An example of estimation task completion of flow $i$.}
 \label{Estimation}
 \end{figure}
 
-% Our scheme relies on reliable state observations to ensure stable
-% training of the learning-based controller. While RTT is a valuable
-% indicator of network congestion, it is not explicitly exposed to the
-% receiver-side control logic. To address this limitation, we leverage
-% sender-side congestion information that can be inferred at the receiver.
+\begin{algorithm}[t]
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\caption{Receiver Measurement and State Construction}
+\label{alg:per_packet_state}
+\begin{algorithmic}[1]
+\Require Packet Arrival $p_{i,t_j}$ for flow $i$ at time $t_j$
+\Ensure state $s$
+\State Maintain flow observation queue:
+$observation\_queue_i$
+\State $Seq_{i,t_j}, cwnd_{i,t_j}, RxBytes_{i,t_j}\leftarrow p_{i,t_j}$
+\State $Losses_{i,t_j}\leftarrow TcpSocket_i$
+\State $B_i(t_j) = B_i(t_{j-1})+ Rx Bytes_{i, t_j}$
+% \State $B_{i,t_j} = \sum_{n = 0}^{t_j} Rx Bytes_{i, n}$
+% \State $L_i(t_j) = \sum_{n=0}^{t_j}Losses_{i, n}$
+\State $L_i(t_j) = L_i(t_{j-1}) + Losses_{i,t_j}$
+\State $o_{i,t_j}=\left[B_i(t_j), L_i(t_j), t_j\right]$
+\State $observation\_queue_i.append(o_{i,t_j})$
+\If{$Seq>\tau_{i,t_{j-\Delta}}$}
+  \State $s_{i,t_{j-\Delta}} = S(o_{i,t_j},o_{i,t_{j-\Delta}};\tau_{i,t_{j-\Delta}})$
+  \State Send $s_{i,t_{j-\Delta}}$ as State Message to Agent
+\EndIf
+% \State Maintain per-flow state variables:
+% $(t_j, o_{i,t_j}, \tau_{i,t_j})$
+% \If{$cwnd$ differs from the previously observed value}
+%     \State Initialize a new estimation task
+%     \State $t_j \gets t$
+%     \State Record observation $o_{i,t_j}$
+%     \State Set completion threshold $\tau_{i,t_j} \gets \mathrm{Seq} + \mathrm{cwnd}$
+% \EndIf
+% \If{an estimation task is active \textbf{and} $\mathrm{Seq} > \tau_{i,t_j}$}
+%     \State Compute elapsed time $t_{\mathrm{elapsed}} \gets t - t_j$
+%     \State Compute goodput
+%     \[
+%     g_i \gets \frac{o_{i,t}^{(1)} - o_{i,t_j}^{(1)}}{t_{\mathrm{elapsed}}}
+%     \]
+%     \State Compute loss rate
+%     \[
+%     \ell_i \gets \frac{o_{i,t}^{(2)} - o_{i,t_j}^{(2)}}{t_{\mathrm{elapsed}}}
+%     \]
+%     \State Output state $s_i \gets [g_i, \ell_i, t_{\mathrm{elapsed}}]$
+%     \State Mark the estimation task as completed
+% \EndIf
+\end{algorithmic}
+\end{algorithm}
 
-% Specifically, under AIMD-based congestion control, the congestion window
-% exhibits a characteristic linear growth behavior, increasing by
-% approximately one MSS over each round-trip time during congestion
-% avoidance. We exploit this property to estimate RTT at the receiver by
-% tracking the temporal evolution of the sender’s congestion window.
-
-% In our design, the receiver records the arrival time associated with
-% previously unseen congestion window values inferred from incoming packets.
-% When the congestion window increases by one MSS, the elapsed time is used
-% as an estimate of the RTT for the corresponding flow. This estimation
-% mechanism does not require additional probing traffic and operates on
-% existing transport-layer dynamics.
-
-% In addition to RTT estimation, the receiver continuously measures per-flow
-% goodput and packet loss statistics between successive receive events, which
-% together form the state input to the window decision module.
+% \begin{algorithm}[t]
+% \caption{Estimation Completion and State Construction $S(\cdot)$}
+% \label{alg:state_construction}
+% \begin{algorithmic}[1]
+% \Require Observations $o_{i,t_j}$, $o_{i,t_{j+\Delta}}$, threshold $\tau_{i,t_j}$
+% \State Compute elapsed time $t_{\mathrm{elapsed}} \gets t_{j+\Delta} - t_j$
+% \If{$t_{\mathrm{elapsed}} > \tau_{i,t_j}$}
+%     \State $g_i \gets \dfrac{o_{i,t_{j+\Delta}}^{(1)} - o_{i,t_j}^{(1)}}{t_{\mathrm{elapsed}}}$
+%     \State $\ell_i \gets \dfrac{o_{i,t_{j+\Delta}}^{(2)} - o_{i,t_j}^{(2)}}{t_{\mathrm{elapsed}}}$
+%     \State \Return $[g_i, \ell_i, t_{\mathrm{elapsed}}]$
+% \Else
+%     \State \Return $\varnothing$
+% \EndIf
+% \end{algorithmic}
+% \end{algorithm}
 
 \subsection{Window Decision Module}
 % action_block 这里写
 The states input is triggered by each receive event that is not able to be known when it happens. Also for the purpose to avoid the agent decision process blocking the normal TCP behaviour, we set a window decision maintained in the Receiver socket and updated periodically. The window decision is a value within $[0,1]$ and set in every ACK header to the sender.
 
 \subsection{Window Enforcement Module}
-The sender is modified to leverage the window decision as a factor to update its CWND as following:
-$$CWND \leftarrow CWND \times Scaling\_Factor ^ {Decision}$$
+The sender is modified to leverage the window decision as a factor to update its $cwnd$ as following:
+$$cwnd \leftarrow cwnd \times Scaling\_Factor ^ {Decision}$$
 
 \subsection{Enforcing Window Generation by RL Agent}
 

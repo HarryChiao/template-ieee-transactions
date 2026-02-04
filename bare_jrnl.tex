@@ -450,7 +450,13 @@ In standard TCP congestion avoidance, CC increases increase by approximately 1 M
 We utilise this to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$. Therefore, upon every packet receive event that includes a $cwnd$ value different from the last value received, the Receiver Measurement Modules establishes a new estimation task. A new task is initialised with the current observations and a threshold, e.g., for flow $i$ at time $j$, defined as below:
 $$ \tau_{i,t_j} = Seq_{i, t_j} + cwnd_{i,t_j} $$
 An estimation task is completed when a coming packet is seen with $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$. The $cwnd$ elapsed time is calculated as $t_{elapsed} = t_{j+\Delta} - t_{j}$. Then $t_{elapsed}$ along with other observations are processed to generate a state for training our RL Agent. In observations, we maintain a cumulative received bytes, packet losses i.e., 
-an observation of flow $i$ at $t_j$ is defined as $o_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]$, where $B_i(t_j) = \sum_{n = 0}^{t_j} Rx Bytes_{i, n}$, and $L_i(t_j) = \sum_{n=0}^{t_j}Losses_{i, n}$. Then the goodput ($g_{i, t_j}$) and the packet loss rate ($\ell_{i,t_j}$) are calculated and formed a state message along with the $t_{elapsed}$. The state generation is defined as:
+an observation of flow $i$ at $t_j$ defined as follow:
+\begin{equation}
+  o_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]
+\end{equation} 
+$$B_i(t_j) = \sum_{n = 0}^{t_j} Rx Bytes_{i, n}$$
+$$L_i(t_j) = \sum_{n=0}^{t_j}Losses_{i, n}$$
+Then the goodput ($g_{i, t_j}$) and the packet loss rate ($\ell_{i,t_j}$) are calculated and formed a state message along with the $t_{elapsed}$. The state generation is defined as:
 $$ S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j}) = [g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}]$$
 where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$ and $\ell_{i,t_j} = \frac{L_i(t_{j+\Delta})-L_i(t_j)}{t_{elapsed}}$.
 
@@ -467,22 +473,22 @@ where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$ and $\ell_{i
 \caption{Receiver Measurement and State Construction}
 \label{alg:per_packet_state}
 \begin{algorithmic}[1]
-\Require Packet Arrival $p_{i,t_j}$ for flow $i$ at time $t_j$
-\Ensure state $s$
-\State Maintain flow observation queue:
-$observation\_queue_i$
-\State $Seq_{i,t_j}, cwnd_{i,t_j}, RxBytes_{i,t_j}\leftarrow p_{i,t_j}$
-\State $Losses_{i,t_j}\leftarrow TcpSocket_i$
+\Require Flow Id $i$, Time $t_j$, Arrived Packet $p_{i,t_j}$, Flow Observation Queue $q_i$
+\Ensure State message $s_{i,t_j}$
+\State Extract $Seq_{i,t_j}$, $cwnd_{i,t_j}$, and $RxBytes_{i,t_j}$ from $p_{i,t_j}$
+\State $\tau_{i,t_j} = Seq_{i,t_j}+cwnd_{i,t_j}$
+\State Obtain $Losses_{i,t_j}$ from $TcpSocket_i$
 \State $B_i(t_j) = B_i(t_{j-1})+ Rx Bytes_{i, t_j}$
-% \State $B_{i,t_j} = \sum_{n = 0}^{t_j} Rx Bytes_{i, n}$
-% \State $L_i(t_j) = \sum_{n=0}^{t_j}Losses_{i, n}$
 \State $L_i(t_j) = L_i(t_{j-1}) + Losses_{i,t_j}$
 \State $o_{i,t_j}=\left[B_i(t_j), L_i(t_j), t_j\right]$
-\State $observation\_queue_i.append(o_{i,t_j})$
-\If{$Seq>\tau_{i,t_{j-\Delta}}$}
-  \State $s_{i,t_{j-\Delta}} = S(o_{i,t_j},o_{i,t_{j-\Delta}};\tau_{i,t_{j-\Delta}})$
-  \State Send $s_{i,t_{j-\Delta}}$ as State Message to Agent
+\State Enqueue $o_{i,t_j}$ and $\tau_{i,t_j}$ into $q_i$
+\State Obtain $o_{i}^{head}$ and $\tau_{i}^{head}$ from the head of $q_i$
+\If{$Seq_{i,t_j} > \tau_{i}^{head}$}
+  \State Dequeue $o_{i}^{head}$ and $\tau_{i}^{head}$ from $q_i$
+  \State $s_{i,t_{j}} = S(o_{i,t_j},o_{i}^{head})$
+  \State Send $s_{i,t_{j}}$ as State Message to Agent
 \EndIf
+
 % \State Maintain per-flow state variables:
 % $(t_j, o_{i,t_j}, \tau_{i,t_j})$
 % \If{$cwnd$ differs from the previously observed value}

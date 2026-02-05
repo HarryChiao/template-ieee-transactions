@@ -466,12 +466,12 @@ We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = 
 $$ S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j}) = \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
 The Receiver Measurement and State Generation process can be seen in Algorithm~\ref{alg:per_packet_state}.
 
-\begin{figure}[!t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\columnwidth]{./fig/ReceiverMeasurementModule2.png}
+\includegraphics[width=0.8\textwidth]{./fig/ReceiverMeasurementModule2_2.png}
 \caption{An example of estimation task completion of flow $i$.}
 \label{Estimation}
-\end{figure}
+\end{figure*}
 
 \begin{algorithm}[t]
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
@@ -487,57 +487,27 @@ The Receiver Measurement and State Generation process can be seen in Algorithm~\
 \State $B_i(t_j) = B_i(t_{j-1})+ Rx Bytes_{i, t_j}$
 \State $L_i(t_j) = L_i(t_{j-1}) + Losses_{i,t_j}$
 \State $o_{i,t_j}=\left[B_i(t_j), L_i(t_j), t_j\right]$
-\State Enqueue $o_{i,t_j}$ and $\tau_{i,t_j}$ into $q_i$
 \State Obtain $o_{i}^{head}$ and $\tau_{i}^{head}$ from the head of $q_i$
-\If{$Seq_{i,t_j} > \tau_{i}^{head}$}
+\If{$Seq_{i,t_j} \ge \tau_{i}^{head}$}
   \State Dequeue $o_{i}^{head}$ and $\tau_{i}^{head}$ from $q_i$
   \State $s_{i,t_{j}} = S(o_{i,t_j},o_{i}^{head})$
   \State Send $s_{i,t_{j}}$ as State Message to Agent
+\ElsIf{$cwnd_{i,t_j} \neq cwnd_{i,t_{j-1}}$}
+  \State Enqueue $o_{i,t_j}$ and $\tau_{i,t_j}$ into $q_i$
 \EndIf
-
-% \State Maintain per-flow state variables:
-% $(t_j, o_{i,t_j}, \tau_{i,t_j})$
-% \If{$cwnd$ differs from the previously observed value}
-%     \State Initialize a new estimation task
-%     \State $t_j \gets t$
-%     \State Record observation $o_{i,t_j}$
-%     \State Set completion threshold $\tau_{i,t_j} \gets \mathrm{Seq} + \mathrm{cwnd}$
-% \EndIf
-% \If{an estimation task is active \textbf{and} $\mathrm{Seq} > \tau_{i,t_j}$}
-%     \State Compute elapsed time $t_{\mathrm{elapsed}} \gets t - t_j$
-%     \State Compute goodput
-%     \[
-%     g_i \gets \frac{o_{i,t}^{(1)} - o_{i,t_j}^{(1)}}{t_{\mathrm{elapsed}}}
-%     \]
-%     \State Compute loss rate
-%     \[
-%     \ell_i \gets \frac{o_{i,t}^{(2)} - o_{i,t_j}^{(2)}}{t_{\mathrm{elapsed}}}
-%     \]
-%     \State Output state $s_i \gets [g_i, \ell_i, t_{\mathrm{elapsed}}]$
-%     \State Mark the estimation task as completed
-% \EndIf
 \end{algorithmic}
 \end{algorithm}
 
-% \begin{algorithm}[t]
-% \caption{Estimation Completion and State Construction $S(\cdot)$}
-% \label{alg:state_construction}
-% \begin{algorithmic}[1]
-% \Require Observations $o_{i,t_j}$, $o_{i,t_{j+\Delta}}$, threshold $\tau_{i,t_j}$
-% \State Compute elapsed time $t_{\mathrm{elapsed}} \gets t_{j+\Delta} - t_j$
-% \If{$t_{\mathrm{elapsed}} > \tau_{i,t_j}$}
-%     \State $g_i \gets \dfrac{o_{i,t_{j+\Delta}}^{(1)} - o_{i,t_j}^{(1)}}{t_{\mathrm{elapsed}}}$
-%     \State $\ell_i \gets \dfrac{o_{i,t_{j+\Delta}}^{(2)} - o_{i,t_j}^{(2)}}{t_{\mathrm{elapsed}}}$
-%     \State \Return $[g_i, \ell_i, t_{\mathrm{elapsed}}]$
-% \Else
-%     \State \Return $\varnothing$
-% \EndIf
-% \end{algorithmic}
-% \end{algorithm}
-
 \subsection{Window Decision Module}
-% action_block 这里写
-The states input is triggered by each receive event that is not able to be known when it happens. Also for the purpose to avoid the agent decision process blocking the normal TCP behaviour, we set a window decision maintained in the Receiver socket and updated periodically. The window decision is a value within $[0,1]$ and set in every ACK header to the sender.
+% action_block 这里写，算了，写agent吧
+Window Decision Module consists of a Reinforcement Learning model to output a scaling factor to underlying TCP socket. An enforced congestion window is calculated with the factor by the underlying TCP socket and included in ACK to the sender. The sender will overwrite its $cwnd$ by the enforced congestion window. Therefore, to implement a continuous control to modified TCP, we choose Deep Deterministic Policy Gradient (DDPG) as agent in our design
+
+Our agent consists of an actor network determining a deterministic action $a = \mu(s;\theta^{\mu})$ parameterised by $\theta^{\mu}$ and a critic network to approximate the expected future return, defined as $Q(s,a;\theta^{Q}) = \mathbb{E}[R_t|s_t,a_t]$ with parameters $\theta^{Q}$. The return $R_t$ is the sum of discounted future return, i.e., $R_t = \sum_{i=t}^{T}\gamma^{i-t}r(s_i,a_i)$. The critic network is updated by minimising the mean square error between its output and a target function ($y_t$), shown as follows:
+$$L(\theta^Q) = \mathbb{E}[(Q(s_t,a_t;\theta^Q) - y_t)^2]$$
+where $y_t=r(s_t,a_t) + \gamma Q(s_{t+1}, \mu(s_{t+1};\theta^{\mu});\theta^Q)$. Subsequently, with the updated critic network, policy performance of current actor network is predicted, expressed as $J(\theta^\mu) = \mathbb{E}[Q(s_t,\mu(s_t;\theta^\mu))]$.
+Then the actor network is updated by calculating the gradient of the policy performance, which, by applying the chain rule, is computed as:
+$$\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t;\theta^\mu))
+\nabla_{\theta^\mu} \mu(s_t;\theta^\mu)]$$
 
 \subsection{Window Enforcement Module}
 The sender is modified to leverage the window decision as a factor to update its $cwnd$ as following:

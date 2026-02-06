@@ -411,26 +411,13 @@ IoT, TCP, congestion control, reinforcement learning.
 % I wish you the best of success.
 \IEEEPARstart{T}{his} part is to be completed.
 
-% \hfill mds
- 
-% \hfill August 26, 2015
-
-% \subsection{Subsection Heading Here}
-% Subsection text here.
-
-% % needed in second column of first page if using \IEEEpubid
-% %\IEEEpubidadjcol
-
-% \subsubsection{Subsubsection Heading Here}
-% Subsubsection text here.
-
 \section{Related Works}
 
 \section{System Design}
 Our proposal contains three modules in the receiver side for adjusting sender $cwnd$, Receiver Measurement Module, Window Decision Module, and Window Enforcement Module.
 Additionaly, TCP sockets in both sender and receiver are extended or modified for adding interfaces to achieved our features.
 
-\subsection{Message types definition}
+\subsection{Control Message types definition}
 % The receiver TCP socket is extended to have features to communicate with our agent. We defined messages into three types 'state', 'action request', 'connection close' for agent to execute either store the states into its replay buffer, output an action, or clear the states for the closed connection.
 
 The receiver TCP socket is extended to support communication with the RL agent. 
@@ -453,25 +440,29 @@ In standard TCP congestion avoidance, the congestion window $cwnd$ is increased 
 We utilise Additive Increment growing feature to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$.
 In particular, upon every packet receive event that includes a $cwnd$ value different from the last value received, the Receiver Measurement Module establishes a new estimation task.
  A new task is initialised with the current observation ($o$) and a threshold ($\tau$), e.g., for flow $i$ started at time $t_0$ and estimated at time $t_j$, defined as below:
- \begin{equation}
+\begin{equation}
   o_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]
 \end{equation} 
-$$B_i(t_j) = \sum_{n = t_0}^{t_j} Rx Bytes_{i, n}$$
-$$L_i(t_j) = \sum_{n= t_0}^{t_j}Losses_{i, n}$$
 \begin{equation}
   \tau_{i,t_j} = Seq_{i, t_j} + cwnd_{i,t_j}
 \end{equation}
+\begin{equation}
+  B_i(t_j) = \sum_{n = t_0}^{t_j} Rx Bytes_{i, n}
+\end{equation} 
+\begin{equation}
+  L_i(t_j) = \sum_{n= t_0}^{t_j}Losses_{i, n}
+\end{equation} 
 An estimation task is completed at $t_{j+\Delta}$ when a coming packet is seen with a sequence number satisfying $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$.
-We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = t_{j+\Delta} - t_{j}$. The $t_{elapsed}$ is then used to calculate the goodput ($g_{i, t_j}$) and the packet loss rate ($\ell_{i,t_j}$) during the estimation task, where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$ and $\ell_{i,t_j} = \frac{L_i(t_{j+\Delta})-L_i(t_j)}{t_{elapsed}}$. We then form a state message according to $s_{i,t_j}=S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j})$, where the generation process is defined as follows:
-$$ S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j}) = \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
+We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = t_{j+\Delta} - t_{j}$. We then calculate the goodput ($g_{i, t_j}$) and packet losses during the estimation task, where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$. and $\ell_{i,t_j} = L_i(t_{j+\Delta})-L_i(t_j)$. We then form a state message according to $s_{i,t_j}=S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j})$, where the generation process is defined as follows:
+$$ S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j}) \triangleq \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
 The Receiver Measurement and State Generation process can be seen in Algorithm~\ref{alg:per_packet_state}.
 
-\begin{figure*}[!t]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=0.8\textwidth]{./fig/ReceiverMeasurementModule2_2.png}
+\includegraphics[width=0.9\linewidth]{./fig/ReceiverMeasurementModule2_2.png}
 \caption{An example of estimation task completion of flow $i$.}
 \label{Estimation}
-\end{figure*}
+\end{figure}
 
 \begin{algorithm}[t]
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
@@ -498,78 +489,51 @@ The Receiver Measurement and State Generation process can be seen in Algorithm~\
 \end{algorithmic}
 \end{algorithm}
 
+\begin{algorithm}[t]
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\caption{Learning Algortihm}
+\label{alg:window_decision_module}
+\begin{algorithmic}[1]
+\Require Control Message $M$, Replay Buffer $B$, Flow State Buffer $B_i$ for flow $i$
+\Ensure 
+\If{$M$ = "Connnection Close"}
+\State Clear $B_i$
+\ElsIf{$M$ = "State"}
+\State Extract $s_i$ from $M$
+\ElsIf{$M$ = "Action Request"}
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{Window Decision Module}
 % action_block 这里写，算了，写agent吧
-Window Decision Module consists of a Reinforcement Learning model to output a scaling factor to underlying TCP socket. An enforced congestion window is calculated with the factor by the underlying TCP socket and included in ACK to the sender. The sender will overwrite its $cwnd$ by the enforced congestion window. Therefore, to implement a continuous control to modified TCP, we choose Deep Deterministic Policy Gradient (DDPG) as agent in our design
+Window Decision Module consists of a Reinforcement Learning model to output a scaling factor to underlying TCP socket and a periodic action request feature. An enforced congestion window is calculated with the factor by the underlying TCP socket and included in ACK to the sender. The sender will overwrite its $cwnd$ by the enforced congestion window. Therefore, to implement a continuous control to modified TCP, we choose Deep Deterministic Policy Gradient (DDPG) as agent in our design.
 
-Our agent consists of an actor network determining a deterministic action $a = \mu(s;\theta^{\mu})$ parameterised by $\theta^{\mu}$ and a critic network to approximate the expected future return, defined as $Q(s,a;\theta^{Q}) = \mathbb{E}[R_t|s_t,a_t]$ with parameters $\theta^{Q}$. The return $R_t$ is the sum of discounted future return, i.e., $R_t = \sum_{i=t}^{T}\gamma^{i-t}r(s_i,a_i)$. The critic network is updated by minimising the mean square error between its output and a target function ($y_t$), shown as follows:
-$$L(\theta^Q) = \mathbb{E}[(Q(s_t,a_t;\theta^Q) - y_t)^2]$$
-where $y_t=r(s_t,a_t) + \gamma Q(s_{t+1}, \mu(s_{t+1};\theta^{\mu});\theta^Q)$. Subsequently, with the updated critic network, policy performance of current actor network is predicted, expressed as $J(\theta^\mu) = \mathbb{E}[Q(s_t,\mu(s_t;\theta^\mu))]$.
-Then the actor network is updated by calculating the gradient of the policy performance, which, by applying the chain rule, is computed as:
+\subsubsection{Training}
+Our agent consists of an actor network determining a deterministic action $a = \mu(s;\theta^{\mu})$ parameterised by $\theta^{\mu}$ and a critic network to approximate the expected future return, defined as $Q(s,a;\theta^{Q}) = \mathbb{E}[R_t|s_t,a_t]$ with parameters $\theta^{Q}$. 
+The return $R_t$ is the sum of discounted future return, i.e., $R_t = \sum_{i=t}^{T}\gamma^{i-t}r(s_i,a_i)$. Approaching to the approximation is done by updating the critic network through minimising the mean square error between its output and a target function ($y_t$), shown as follows:
+$$ L(\theta^Q) = \mathbb{E}[(Q(s_t,a_t;\theta^{Q}) - y_t)^2] $$
+$$y_t=r(s_t,a_t) + \gamma Q^{-}(s_{t+1}, \mu^{-}(s_{t+1};\theta^{\mu^-});\theta^{Q^-})$$ 
+where $Q^{-}(s, a;\theta^{-})$ and $\mu^{-}(s;\theta^{\mu^-})$ are target critic network and target policy network. Their parameters are updated by calculating the exponetially weighted moving average of critic network and policy network, i.e., $\theta^{-} \leftarrow \tau \times \theta + (1-\tau)\times \theta^{-}$ where the $\tau$ is the weight parameter.
+Subsequently, with the updated critic network, policy performance of current actor network is predicted, expressed as $J(\theta^\mu) = \mathbb{E}[Q(s_t,\mu(s_t;\theta^\mu))]$.
+Training an actor network is done by updating its paramters through policy performance gradient ascent. Specifically, by applying the chain rule, the gradient of the policy performance, is computed as:
 $$\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t;\theta^\mu))
 \nabla_{\theta^\mu} \mu(s_t;\theta^\mu)]$$
 
+\subsubsection{Action Request}
+For an RL-controlled CC, it is important that waiting agent for action generation should not block the TCP normal behaviour. Therefore, we decouple the Window Decision Module, Receiver Measurement Module and standard feature to ensure none of them will block any other. Therefore, an ACK response will not be delayed due to our scheme. 
+In our design, an action request message will be sent to agent periodically by Window Decision Module. The resulting action is a factor within $[0,1]$. Once the Window Decision Module receive the action, it will extract the latest $cwnd$ in Receiver Measurement Module and compute the enforced congestion window using the following:
+$$cwnd_{enforced} = cwnd \times scaling\_factor ^ {a},\ n \in[0,1]$$
+Then the enforced $cwnd$ will be included into the ACK header and take effect at the sender side. For the receiver, before the next action request tick, the action will keep effective.
+
 \subsection{Window Enforcement Module}
-The sender is modified to leverage the window decision as a factor to update its $cwnd$ as following:
-$$cwnd \leftarrow cwnd \times Scaling\_Factor ^ {Decision}$$
+
 
 \subsection{Enforcing Window Generation by RL Agent}
 
 
 \section{Simulation setup and results}
-% An example of a floating figure using the graphicx package.
-% Note that \label must occur AFTER (or within) \caption.
-% For figures, \caption should occur after the \includegraphics.
-% Note that IEEEtran v1.7 and later has special internal code that
-% is designed to preserve the operation of \label within \caption
-% even when the captionsoff option is in effect. However, because
-% of issues like this, it may be the safest practice to put all your
-% \label just after \caption rather than within \caption{}.
-%
-% Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
-% option should be used if it is desired that the figures are to be
-% displayed while in draft mode.
-%
-%\begin{figure}[!t]
-%\centering
-%\includegraphics[width=2.5in]{myfigure}
-% where an .eps filename suffix will be assumed under latex, 
-% and a .pdf suffix will be assumed for pdflatex; or what has been declared
-% via \DeclareGraphicsExtensions.
-%\caption{Simulation results for the network.}
-%\label{fig_sim}
-%\end{figure}
-
-% Note that the IEEE typically puts floats only at the top, even when this
-% results in a large percentage of a column being occupied by floats.
-
-
-% An example of a double column floating figure using two subfigures.
-% (The subfig.sty package must be loaded for this to work.)
-% The subfigure \label commands are set within each subfloat command,
-% and the \label for the overall figure must come after \caption.
-% \hfil is used as a separator to get equal spacing.
-% Watch out that the combined width of all the subfigures on a 
-% line do not exceed the text width or a line break will occur.
-%
-%\begin{figure*}[!t]
-%\centering
-%\subfloat[Case I]{\includegraphics[width=2.5in]{box}%
-%\label{fig_first_case}}
-%\hfil
-%\subfloat[Case II]{\includegraphics[width=2.5in]{box}%
-%\label{fig_second_case}}
-%\caption{Simulation results for the network.}
-%\label{fig_sim}
-%\end{figure*}
-%
-% Note that often IEEE papers with subfigures do not employ subfigure
-% captions (using the optional argument to \subfloat[]), but instead will
-% reference/describe all of them (a), (b), etc., within the main caption.
-% Be aware that for subfig.sty to generate the (a), (b), etc., subfigure
-% labels, the optional argument to \subfloat must be present. If a
-% subcaption is not desired, just leave its contents blank,
-% e.g., \subfloat[].
 
 
 % An example of a floating table. Note that, for IEEE style tables, the

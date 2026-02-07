@@ -439,9 +439,10 @@ In standard TCP congestion avoidance, the congestion window $cwnd$ is increased 
 
 We utilise Additive Increment growing feature to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$.
 In particular, upon every packet receive event that includes a $cwnd$ value different from the last value received, the Receiver Measurement Module establishes a new estimation task.
- A new task is initialised with the current observation ($o$) and a threshold ($\tau$), e.g., for flow $i$ started at time $t_0$ and estimated at time $t_j$, defined as below:
+
+A new task is initialised with a record for the current flow state and a threshold ($\tau$), e.g., for flow $i$ started at time $t_0$ and estimated at time $t_j$, defined as below:
 \begin{equation}
-  o_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]
+  record_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]
 \end{equation} 
 \begin{equation}
   \tau_{i,t_j} = Seq_{i, t_j} + cwnd_{i,t_j}
@@ -453,8 +454,9 @@ In particular, upon every packet receive event that includes a $cwnd$ value diff
   L_i(t_j) = \sum_{n= t_0}^{t_j}Losses_{i, n}
 \end{equation} 
 An estimation task is completed at $t_{j+\Delta}$ when a coming packet is seen with a sequence number satisfying $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$.
-We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = t_{j+\Delta} - t_{j}$. We then calculate the goodput ($g_{i, t_j}$) and packet losses during the estimation task, where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$. and $\ell_{i,t_j} = L_i(t_{j+\Delta})-L_i(t_j)$. We then form a state message according to $s_{i,t_j}=S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j})$, where the generation process is defined as follows:
-$$ S(o_{i,t_{j+\Delta}},o_{i,t_{j}};\tau_{i,t_j}) \triangleq \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
+We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = t_{j+\Delta} - t_{j}$. We then calculate the goodput ($g_{i, t_j}$) and packet losses during the estimation task, where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$. and $\ell_{i,t_j} = L_i(t_{j+\Delta})-L_i(t_j)$. We then form an observation according to 
+$o_{i,t_j}=O(record_{i,t_{j+\Delta}},record_{i,t_{j}};\tau_{i,t_j})$, where the generation process is defined as follows:
+$$ O(record_{i,t_{j+\Delta}},record_{i,t_{j}};\tau_{i,t_j}) \triangleq \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
 The Receiver Measurement and State Generation process can be seen in Algorithm~\ref{alg:per_packet_state}.
 
 \begin{figure}[!t]
@@ -471,20 +473,22 @@ The Receiver Measurement and State Generation process can be seen in Algorithm~\
 \label{alg:per_packet_state}
 \begin{algorithmic}[1]
 \Require Flow Id $i$, Time $t_j$, Arrived Packet $p_{i,t_j}$, Flow Observation Queue $q_i$
-\Ensure State message $s_{i,t_j}$
+\Ensure Observation $o_{i,t_j}$, Control Message $M$
 \State Extract $Seq_{i,t_j}$, $cwnd_{i,t_j}$, and $RxBytes_{i,t_j}$ from $p_{i,t_j}$
 \State $\tau_{i,t_j} = Seq_{i,t_j}+cwnd_{i,t_j}$
 \State Obtain $Losses_{i,t_j}$ from $TcpSocket_i$
 \State $B_i(t_j) = B_i(t_{j-1})+ Rx Bytes_{i, t_j}$
 \State $L_i(t_j) = L_i(t_{j-1}) + Losses_{i,t_j}$
-\State $o_{i,t_j}=\left[B_i(t_j), L_i(t_j), t_j\right]$
-\State Obtain $o_{i}^{head}$ and $\tau_{i}^{head}$ from the head of $q_i$
+\State $record_{i,t_j}=\left[B_i(t_j), L_i(t_j), t_j\right]$
+\State Obtain $record_{i}^{head}$ and $\tau_{i}^{head}$ from the head of $q_i$
 \If{$Seq_{i,t_j} \ge \tau_{i}^{head}$}
-  \State Dequeue $o_{i}^{head}$ and $\tau_{i}^{head}$ from $q_i$
-  \State $s_{i,t_{j}} = S(o_{i,t_j},o_{i}^{head})$
-  \State Send $s_{i,t_{j}}$ as State Message to Agent
+  \State Dequeue $record_{i}^{head}$ and $\tau_{i}^{head}$ from $q_i$
+  \State $o_{i,t_{j}} = O(record_{i,t_j},record_{i}^{head})$
+  % \State Send $o_{i,t_{j}}$ included into State Message to Agent
+  \State Include $o_{i,t_{j}}$ into $M$
+  \State Send $M$ to agent
 \ElsIf{$cwnd_{i,t_j} \neq cwnd_{i,t_{j-1}}$}
-  \State Enqueue $o_{i,t_j}$ and $\tau_{i,t_j}$ into $q_i$
+  \State Enqueue $record_{i,t_j}$ and $\tau_{i,t_j}$ into $q_i$
 \EndIf
 \end{algorithmic}
 \end{algorithm}
@@ -492,16 +496,29 @@ The Receiver Measurement and State Generation process can be seen in Algorithm~\
 \begin{algorithm}[t]
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
-\caption{Learning Algortihm}
+\caption{Window Decision Module}
 \label{alg:window_decision_module}
 \begin{algorithmic}[1]
-\Require Control Message $M$, Replay Buffer $B$, Flow State Buffer $B_i$ for flow $i$
+\Require Control Message $M$, Replay Buffer $B$, Flow State Buffer $B_i$ for flow $i$, Batch Size $N$
 \Ensure 
 \If{$M$ = "Connnection Close"}
 \State Clear $B_i$
 \ElsIf{$M$ = "State"}
 \State Extract $s_i$ from $M$
+\State Store $s_i$ into $B_i$
 \ElsIf{$M$ = "Action Request"}
+\State Compute the average state $\bar{s_i}$ over $B_i$
+\State $a = \mu(\bar{s_i};\theta^{\mu})$
+\State Store transition $(\bar{s_i}, a_i, r_i, \bar{s_{i}}^{'})$ into $B$
+\State Randomly sample $N$ transition from $B$
+\State Compute $y_t=r(s_t,a_t)+\gamma Q^{-}(s_{t+1},\mu^{-}(s_{t+1}))$
+\State Compute $L(\theta^Q) = \mathbb{E}[(Q(s_t,a_t;\theta^{Q}) - y_t)^2]$
+\State Update Critic minimising $L(\theta^Q)$
+\State Compute $\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t))
+\nabla_{\theta^\mu} \mu(s_t)]$
+\State Update Actor via gradient ascent $\nabla_{\theta^\mu} J(\theta^\mu)$
+\State $\theta^{\mu^-} \leftarrow \tau \times \theta + (1-\tau)\times \theta^{\mu^-}$
+\State $\theta^{Q^-} \leftarrow \tau \times \theta + (1-\tau)\times \theta^{Q^-}$
 \EndIf
 \end{algorithmic}
 \end{algorithm}

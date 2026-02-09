@@ -538,16 +538,14 @@ Training an actor network is done by updating its paramters through policy perfo
 $$\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t;\theta^\mu))
 \nabla_{\theta^\mu} \mu(s_t;\theta^\mu)]$$
 
-\subsubsection{Action Request}
+\subsubsection{Reward}
+
+
+\subsection{Window Enforcement Module}
 For an RL-controlled CC, it is important that waiting agent for action generation should not block the TCP normal behaviour. Therefore, we decouple the Window Decision Module, Receiver Measurement Module and standard feature to ensure none of them will block any other. Therefore, an ACK response will not be delayed due to our scheme. 
 In our design, an action request message will be sent to agent periodically by Window Decision Module. The resulting action is a factor within $[0,1]$. Once the Window Decision Module receive the action, it will extract the latest $cwnd$ in Receiver Measurement Module and compute the enforced congestion window using the following:
 $$cwnd_{enforced} = cwnd \times scaling\_factor ^ {a},\ n \in[0,1]$$
-Then the enforced $cwnd$ will be included into the ACK header and take effect at the sender side. For the receiver, before the next action request tick, the action will keep effective.
-
-\subsection{Window Enforcement Module}
-
-
-\subsection{Enforcing Window Generation by RL Agent}
+Then the enforced $cwnd$ will be included into the ACK header and take effect at the sender side. For the receiver, the same action will keep effective untill the next action request.
 
 
 \section{Simulation setup and results}

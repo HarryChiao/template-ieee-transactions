@@ -127,7 +127,8 @@
 % http://www.ctan.org/pkg/algorithmicx
 
 
-
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
 
 % *** ALIGNMENT PACKAGES ***
 %
@@ -386,6 +387,117 @@ IoT, TCP, congestion control, reinforcement learning.
 \IEEEpeerreviewmaketitle
 
 
+% --- in preamble ---
+
+% \begin{figure*}[t]
+% \centering
+% \begin{tikzpicture}[
+%   font=\small,
+%   node distance=8mm and 14mm,
+%   box/.style={draw, rounded corners=2pt, align=left, inner sep=4pt, minimum width=44mm},
+%   sbox/.style={draw, rounded corners=2pt, align=left, inner sep=4pt, minimum width=44mm, fill=gray!6},
+%   msg/.style={draw, rounded corners=2pt, align=center, inner sep=2.5pt, fill=white},
+%   arrow/.style={-Latex, line width=0.55pt},
+%   dashedarrow/.style={-Latex, dashed, line width=0.55pt},
+%   group/.style={draw, rounded corners=3pt, inner sep=6pt}
+% ]
+
+% % =========================
+% % Left: NS-3 side (SAB.cc)
+% % =========================
+% \node[box] (ns_main) {NS-3 init (SAB.cc)\\
+% \textit{topology/config TCP/apps/sink}};
+% \node[box, below=of ns_main] (ns_bind) {BindRxMonitor()\\
+% TraceConnect: \texttt{Rx} $\rightarrow$ RxMonitor};
+% \node[box, below=of ns_bind] (ns_rx) {RxMonitor(nodeid, packet, header)\\
+% estimate: $\hat{rtt}$, goodput, estLoss\\
+% log stateStream};
+% \node[box, below=of ns_rx] (ns_state_msg) {compose \texttt{state\_message}\\
+% SendToSock(SockToPython, state)};
+% \node[box, below=of ns_state_msg] (ns_sched) {if first time \& RL enabled\\
+% Schedule: Action\_Block(period)};
+% \node[box, below=of ns_sched] (ns_action) {Action\_Block(nodeid, socket)\\
+% SendToSock(\texttt{request\_action})\\
+% recv \texttt{action}};
+% \node[box, below=of ns_action] (ns_apply) {apply action\\
+% $f \leftarrow 2^{action}$\\
+% $wnd \leftarrow cwnd \cdot f$\\
+% \texttt{RLcontrolSignal(wnd)}};
+% \node[box, below=of ns_apply] (ns_close) {if flow closed\\
+% SendToSock(\texttt{close\_message})\\
+% stop scheduling};
+
+% \draw[arrow] (ns_main) -- (ns_bind);
+% \draw[arrow] (ns_bind) -- (ns_rx);
+% \draw[arrow] (ns_rx) -- (ns_state_msg);
+% \draw[arrow] (ns_state_msg) -- (ns_sched);
+% \draw[arrow] (ns_sched) -- (ns_action);
+% \draw[arrow] (ns_action) -- (ns_apply);
+% \draw[arrow] (ns_apply) -- (ns_action) node[midway, right, align=left] {\scriptsize schedule next\\[-1pt]\scriptsize period};
+% \draw[arrow] (ns_action) -- (ns_close);
+
+% % group box for NS-3
+% \node[group, fit=(ns_main)(ns_close), label={[font=\small\bfseries]above:NS-3 / SAB.cc}] (g_ns) {};
+
+% % =========================
+% % Right: Python side (Agent.py)
+% % =========================
+% \node[sbox, right=48mm of ns_rx] (py_server) {Agent server (Agent.py)\\
+% recv JSON over socket};
+% \node[sbox, below=of py_server] (py_parse) {parseMsg(dic)\\
+% switch by \texttt{message\_type}};
+% \node[sbox, below=of py_parse] (py_statebuf) {on \texttt{state}:\\
+% stateBuf[id].push($\hat{rtt}$, goodput, loss, \dots)\\
+% return 0};
+% \node[sbox, below=of py_statebuf] (py_req) {on \texttt{request\_action}:\\
+% sample/aggregate stateBuf[id]\\
+% (optional) Jain/global stats\\
+% compute reward};
+% \node[sbox, below=of py_req] (py_train) {Trainer.train() (DDPG)\\
+% select\_action + replay push\\
+% update actor/critic};
+% \node[sbox, below=of py_train] (py_send) {send \texttt{action} back\\
+% (action is a scalar)};
+% \node[sbox, below=of py_send] (py_close) {on \texttt{close}:\\
+% del stateBuf[id]\\
+% return 0};
+
+% \draw[arrow] (py_server) -- (py_parse);
+% \draw[arrow] (py_parse) -- (py_statebuf);
+% \draw[arrow] (py_parse) -- (py_req);
+% \draw[arrow] (py_req) -- (py_train);
+% \draw[arrow] (py_train) -- (py_send);
+% \draw[arrow] (py_parse) -- (py_close);
+
+% % group box for Python
+% \node[group, fit=(py_server)(py_close), label={[font=\small\bfseries]above:Python / Agent.py}] (g_py) {};
+
+% % =========================
+% % Cross-boundary messages
+% % =========================
+% \node[msg, above=2mm of $(ns_state_msg.east)!0.5!(py_server.west)$] (m_state) {\scriptsize state};
+% \node[msg, above=2mm of $(ns_action.east)!0.5!(py_server.west)$] (m_req) {\scriptsize request\_action};
+% \node[msg, below=2mm of $(ns_action.east)!0.5!(py_send.west)$] (m_act) {\scriptsize action};
+% \node[msg, below=2mm of $(ns_close.east)!0.5!(py_close.west)$] (m_close) {\scriptsize close};
+
+% \draw[dashedarrow] (ns_state_msg.east) -- (py_server.west) node[midway, above=1pt] (tmp1) {} ;
+% \draw[dashedarrow] (ns_action.east) -- (py_server.west);
+% \draw[dashedarrow] (py_send.west) -- (ns_action.east);
+% \draw[dashedarrow] (ns_close.east) -- (py_close.west);
+
+% % put message labels near the dashed arrows
+% \node[above=0pt of tmp1] {\scriptsize};
+
+% % add labels manually (clear and stable)
+% \node[above=1.5mm of $(ns_state_msg.east)!0.55!(py_server.west)$] {\scriptsize \texttt{state}};
+% \node[above=1.5mm of $(ns_action.east)!0.55!(py_server.west)$] {\scriptsize \texttt{request\_action}};
+% \node[below=1.5mm of $(py_send.west)!0.45!(ns_action.east)$] {\scriptsize \texttt{action}};
+% \node[below=1.5mm of $(ns_close.east)!0.55!(py_close.west)$] {\scriptsize \texttt{close}};
+
+% \end{tikzpicture}
+% \caption{Program flow and message exchange between NS-3 (SAB.cc) and Python agent (Agent.py).}
+% \label{fig:sab_agent_flow}
+% \end{figure*}
 
 \section{Introduction}
 % The very first letter is a 2 line initial drop letter followed
@@ -412,6 +524,13 @@ IoT, TCP, congestion control, reinforcement learning.
 \IEEEPARstart{T}{his} part is to be completed.
 
 \section{Related Works}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{./fig/SystemArchitecture2_6.png}
+\caption{System architecture of our proposal.}
+\label{SysArch}
+\end{figure}
 
 \section{System Design}
 Our proposal contains three modules in the receiver side for adjusting sender $cwnd$, Receiver Measurement Module, Window Decision Module, and Window Enforcement Module.
@@ -461,7 +580,7 @@ The Receiver Measurement and State Generation process can be seen in Algorithm~\
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.9\linewidth]{./fig/ReceiverMeasurementModule2_2.png}
+\includegraphics[width=\linewidth]{./fig/ReceiverMeasurementModule2_6.png}
 \caption{An example of estimation task completion of flow $i$.}
 \label{Estimation}
 \end{figure}

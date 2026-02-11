@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1770736817.9287 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1770736818.83301 0
-  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1770736787.66733 36829 6ede5065decfa5fc47d5fd8fc32c9034 ""
+["pdflatex"] 1770822591.59795 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1770822592.35404 0
+  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1770822320.69955 32392 111ceb2834f3981d4cde015c11f2b134 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -147,10 +147,10 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1760078696 3345732 a98826f32f6b110a89caac5b228d63d0 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "IEEEtran.cls" 1761831166.21946 281957 5b2e4fa15b0f7eabb840ebf67df4c0f7 ""
-  "bare_jrnl.aux" 1770736818.76372 2191 eae80add066ff4544a3c03f1dda2f607 "pdflatex"
-  "bare_jrnl.tex" 1770736787.66733 36829 6ede5065decfa5fc47d5fd8fc32c9034 ""
-  "fig/ReceiverMeasurementModule2_6.png" 1770736817.37846 68589 0943b0c356f73f9b60c86d0fb6d0cf0e ""
-  "fig/SystemArchitecture2_6.png" 1770736635.65162 89725 c93994a93269d995fd7e90b7ef52ee04 ""
+  "bare_jrnl.aux" 1770822592.29004 2197 2949b43b59b3855ad8e6e1cb8831626a "pdflatex"
+  "bare_jrnl.tex" 1770822320.69955 32392 111ceb2834f3981d4cde015c11f2b134 ""
+  "fig/ReceiverMeasurementModule3.png" 1770822590.27908 76487 29f2c46894f01ebe1c3802377dcca9b7 ""
+  "fig/SystemArchitecture2_7.png" 1770812958.88236 90339 a3e462d32ef8080e9c3d05c1b1bf9327 ""
   (generated)
   "bare_jrnl.aux"
   "bare_jrnl.log"

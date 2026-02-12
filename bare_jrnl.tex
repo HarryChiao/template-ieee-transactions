@@ -431,7 +431,7 @@ The receiver TCP socket is extended to support communication with the RL agent.
 Three types of messages are defined:
 
 \begin{itemize}
-    \item \textbf{State}: carries the observed network state and is sent to the agent for storage in the replay buffer.
+    \item \textbf{Observation Message}: carries the observed network status and is sent to the agent for storage in the replay buffer.
     
     \item \textbf{Action Request}: triggers the agent to infer and return a control action based on the current state.
     
@@ -441,7 +441,7 @@ Three types of messages are defined:
 \subsection{Receiver Measurement Module}
 Our scheme relies on reliable state observations to ensure stable training. Therefore, the states in our design are required to reflect the congestion extent while remaining observable at the receiver. Despite RTT is a fine-grained and valuable indicator of congestion, it is difficult to directly observe in the receiver side.
 
-To address the limitation above, we derive a receiver-side congestion extent metric based on the $cwnd$ elapsed time. We extend the sender TCP feature to include its $cwnd$ in TCP header. 
+To address the limitation above, we derive a receiver-side congestion extent metric based on the $cwnd$ elapsed time ($t_{elapsed}$). We extend the sender TCP feature to include its $cwnd$ in TCP header. 
 In standard TCP congestion avoidance, the congestion window $cwnd$ is increased by 1 MSS after an entire $cwnd$ bytes has been acknowledged. This nature results in an approximate growth rate of 1 MSS per RTT, in which the method is named Additive Increment.
 
 We utilise Additive Increment growing feature to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$.
@@ -473,7 +473,7 @@ An estimation task is completed at $t_{j+\Delta}$ when a coming packet is seen w
 We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = t_{j+\Delta} - t_{j}$. We then calculate the goodput ($g_{i, t_j}$) and packet losses during the estimation task, where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$. and $\ell_{i,t_j} = L_i(t_{j+\Delta})-L_i(t_j)$. Therefore, an observation is formed denoted as 
 $o_{i,t_j}=O(Rec_{i,t_{j+\Delta}},Rec_{i,t_{j}};\tau_{i,t_j})$, with the observation as the result of the generation process defined as follows:
 $$ O(Rec_{i,t_{j+\Delta}},Rec_{i,t_{j}};\tau_{i,t_j}) \triangleq \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
-The eventual observation is encapsulated into a State Message and sent to the Window Decision Module for storage. The consecutive process can be seen in Algorithm~\ref{alg:per_packet_state}.
+The eventual observation is encapsulated into a Observation Message and sent to the Window Decision Module for storage. The consecutive process triggered by packet received event can be seen in Algorithm~\ref{alg:per_packet_state}.
 
 \begin{algorithm}[t]
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
@@ -537,6 +537,10 @@ The eventual observation is encapsulated into a State Message and sent to the Wi
 Window Decision Module consists of a Reinforcement Learning model to output a scaling factor to underlying TCP socket periodically triggered by Action Request from Window Enforcement Module.
 An enforced congestion window is then calculated with the factor by the underlying TCP socket and included in ACK to the sender. The sender will overwrite its $cwnd$ by the enforced congestion window. Therefore, to implement a continuous control to modified TCP, we choose Deep Deterministic Policy Gradient (DDPG) as agent in our design.
 
+\subsubsection{State Generation}
+
+\subsubsection{Reward Design}
+
 \subsubsection{Training}
 Our agent consists of an actor network determining a deterministic action $a = \mu(s;\theta^{\mu})$ parameterised by $\theta^{\mu}$ and a critic network to approximate the expected future return, defined as $Q(s,a;\theta^{Q}) = \mathbb{E}[R_t|s_t,a_t]$ with parameters $\theta^{Q}$. 
 The return $R_t$ is the sum of discounted future return, i.e., $R_t = \sum_{i=t}^{T}\gamma^{i-t}r(s_i,a_i)$. Approaching to the approximation is done by updating the critic network through minimising the mean square error between its output and a target function ($y_t$), shown as follows:
@@ -547,9 +551,6 @@ Subsequently, with the updated critic network, policy performance of current act
 Training an actor network is done by updating its paramters through policy performance gradient ascent. Specifically, by applying the chain rule, the gradient of the policy performance, is computed as:
 $$\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t;\theta^\mu))
 \nabla_{\theta^\mu} \mu(s_t;\theta^\mu)]$$
-
-\subsubsection{Reward}
-
 
 \subsection{Window Enforcement Module}
 For an RL-controlled CC, it is important that waiting agent for action generation should not block the TCP normal behaviour. Therefore, we decouple the Window Decision Module, Receiver Measurement Module and standard feature to ensure none of them will block any other. Therefore, an ACK response will not be delayed due to our scheme. 

@@ -472,7 +472,7 @@ where we set $\tau$ to be the sum of sequence number ($Seq_{i,t_j}$) and the $cw
 An estimation task is completed at $t_{j+\Delta}$ when a coming packet is seen with a sequence number satisfying $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$.
 We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = t_{j+\Delta} - t_{j}$. We then calculate the goodput ($g_{i, t_j}$) and packet losses during the estimation task, where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$. and $\ell_{i,t_j} = L_i(t_{j+\Delta})-L_i(t_j)$. Therefore, an observation is formed denoted as 
 $o_{i,t_j}=O(Rec_{i,t_{j+\Delta}},Rec_{i,t_{j}};\tau_{i,t_j})$, with the observation as the result of the generation process defined as follows:
-$$ O(Rec_{i,t_{j+\Delta}},Rec_{i,t_{j}};\tau_{i,t_j}) \triangleq \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
+$$ O(Rec_{i,t_{j+\Delta}},Rec_{i,t_{j}};\tau_{i,t_j}) = \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
 The eventual observation is encapsulated into a Observation Message and sent to the Window Decision Module for storage. The consecutive process triggered by packet received event can be seen in Algorithm~\ref{alg:per_packet_state}.
 
 \begin{algorithm}[t]
@@ -538,25 +538,45 @@ Window Decision Module consists of a Reinforcement Learning model to output a sc
 An enforced congestion window is then calculated with the factor by the underlying TCP socket and included in ACK to the sender. The sender will overwrite its $cwnd$ by the enforced congestion window. Therefore, to implement a continuous control to modified TCP, we choose Deep Deterministic Policy Gradient (DDPG) as agent in our design.
 
 \subsubsection{State Generation}
+An observation is generated on the packet arrival event while the action is requested periodically. In our design, the action period is set to long enough to ensure we have multiple observations stored by an Observation Repository.Therefore, we first use an exponential weighted moving average (EWMA) filter to smooth the observations before storing them in the repository. This is done to mitigate the noise when the observation is generated in a varying network environment e.g., Wi-Fi. After storing, when an action request is received, the average of the stored observations during this action period is calculated as input to our agent, seen as follows when $n$ observations are stored:
+\begin{equation}
+  s_t = \left[  \frac{1}{n}\sum_{i=1}^{n}g_i, \frac{1}{n}\sum_{i=1}^{n}t_{elapsed,i} \right]
+\end{equation}
 
 \subsubsection{Reward Design}
+For improving network performance for each flow, the first component of our reward is based on network power metric to reflect individual flow performance, defined as follows:
+
+$$ r_{1,t} = \frac{\frac{1}{n}\sum_{i=1}^{n}g_i}{\frac{1}{n}\sum_{i=1}^{n}t_{elapsed,i}}$$
+
+We also take the advantage of the global performance store in repository to designe the second component for improving fairness among flows. Jain's fairness index is introduced considring $N$ flows defined as follows:
+$$r_{2,t} =
+\frac{\left(\sum_{i=1}^{N} \bar{g_i} \right)^2}
+{N \sum_{i=1}^{N} \bar{g_i^2}}$$
+Eventually, we design our reward as:
+\begin{equation}
+r_t =
+\begin{cases}
+-2, & \text{if } \ell_t > 0 \\
+r_{1,t} - (1 - r_{2,t})^2, & \text{otherwise}
+\end{cases}
+\end{equation}
 
 \subsubsection{Training}
 Our agent consists of an actor network determining a deterministic action $a = \mu(s;\theta^{\mu})$ parameterised by $\theta^{\mu}$ and a critic network to approximate the expected future return, defined as $Q(s,a;\theta^{Q}) = \mathbb{E}[R_t|s_t,a_t]$ with parameters $\theta^{Q}$. 
 The return $R_t$ is the sum of discounted future return, i.e., $R_t = \sum_{i=t}^{T}\gamma^{i-t}r(s_i,a_i)$. Approaching to the approximation is done by updating the critic network through minimising the mean square error between its output and a target function ($y_t$), shown as follows:
 $$ L(\theta^Q) = \mathbb{E}[(Q(s_t,a_t;\theta^{Q}) - y_t)^2] $$
 $$y_t=r(s_t,a_t) + \gamma Q^{-}(s_{t+1}, \mu^{-}(s_{t+1};\theta^{\mu^-});\theta^{Q^-})$$ 
-where $Q^{-}(s, a;\theta^{-})$ and $\mu^{-}(s;\theta^{\mu^-})$ are target critic network and target policy network. Their parameters are updated by calculating the exponetially weighted moving average of critic network and policy network, i.e., $\theta^{-} \leftarrow \tau \times \theta + (1-\tau)\times \theta^{-}$ where the $\tau$ is the weight parameter.
+where $Q^{-}(s, a;\theta^{-})$ and $\mu^{-}(s;\theta^{\mu^-})$ are target critic network and target policy network. Their parameters are updated by calculating the exponetially weighted moving average (EWMA) of critic network and policy network, i.e., $\theta^{-} \leftarrow \tau \times \theta + (1-\tau)\times \theta^{-}$ where the $\tau$ is the weight parameter.
 Subsequently, with the updated critic network, policy performance of current actor network is predicted, expressed as $J(\theta^\mu) = \mathbb{E}[Q(s_t,\mu(s_t;\theta^\mu))]$.
 Training an actor network is done by updating its paramters through policy performance gradient ascent. Specifically, by applying the chain rule, the gradient of the policy performance, is computed as:
 $$\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t;\theta^\mu))
 \nabla_{\theta^\mu} \mu(s_t;\theta^\mu)]$$
 
 \subsection{Window Enforcement Module}
-For an RL-controlled CC, it is important that waiting agent for action generation should not block the TCP normal behaviour. Therefore, we decouple the Window Decision Module, Receiver Measurement Module and standard feature to ensure none of them will block any other. Therefore, an ACK response will not be delayed due to our scheme. 
-In our design, an action request message will be sent to agent periodically by Window Decision Module. The resulting action is a factor within $[0,1]$. Once the Window Decision Module receive the action, it will extract the latest $cwnd$ in Receiver Measurement Module and compute the enforced congestion window using the following:
-$$cwnd_{enforced} = cwnd \times scaling\_factor ^ {a},\ n \in[0,1]$$
-Then the enforced $cwnd$ will be included into the ACK header and take effect at the sender side. For the receiver, the same action will keep effective untill the next action request.
+For an RL-controlled CC, it is important that waiting agent for action generation should not block the TCP normal behaviour. Therefore, we decouple the Window Decision Module, Receiver Measurement Module and standard feature to ensure none of them will block any other. Therefore, an ACK response will not be delayed in our scheme. 
+In our design, an action request message will be sent to agent periodically by Window Decision Module. The resulting action is a factor within $[0,1]$. Once the Window Decision Module receive the action, it will extract the latest $cwnd$ in Receiver Measurement Module and compute the enforced congestion window ($cwnd_{\mu}$) using the following:
+$$cwnd_{\mu} = cwnd \times scaling\_factor ^ {a},\ n \in[0,1]$$
+Then $cwnd_{\mu}$ will be included into the ACK header and take effect at the sender side.
 
 
 \section{Simulation setup and results}

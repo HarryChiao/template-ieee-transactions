@@ -578,19 +578,18 @@ In our design, an action request message will be sent to agent periodically by W
 $$cwnd_{\mu} = cwnd \times scaling\_factor ^ {a},\ n \in[0,1]$$
 Then $cwnd_{\mu}$ will be included into the ACK header and take effect at the sender side.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\linewidth]{./fig/multi-to-one_Topo.png}
+  \caption{A multi-to-one flow scenario.}
+  \label{multi-to-one}
+\end{figure}
 
 \section{Simulation setup and results}
+Our scheme is implemented in NS-3 simulator. With the motivation to improve the performance of multiple flows to one receiver. We set up our topology as shown in Fig.~\ref{multi-to-one}. We compare our scheme with existing CC algorithms, i.e., NewReno, Cubic, and BBR.
+\subsection{3-flow scenario}
+In this schenario, we started three flows with a 10s interval. The three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme.
 
-
-% An example of a floating table. Note that, for IEEE style tables, the
-% \caption command should come BEFORE the table and, given that table
-% captions serve much like titles, are usually capitalized except for words
-% such as a, an, and, as, at, but, by, for, in, nor, of, on, or, the, to
-% and up, which are usually not capitalized unless they are the first or
-% last word of the caption. Table text will default to \footnotesize as
-% the IEEE normally uses this smaller font for tables.
-% The \label must come after \caption as always.
-%
 %\begin{table}[!t]
 %% increase table row spacing, adjust to taste
 %\renewcommand{\arraystretch}{1.3}

@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1770488895 "/home/cheeseleopard/paper/template-ieee-transactions/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1770488895
+["pdflatex"] 1771110637 "/home/cheeseleopard/paper/template-ieee-transactions/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1771110638
   "/etc/texmf/web2c/texmf.cnf" 1770468442 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/cheeseleopard/paper/template-ieee-transactions/bare_jrnl.tex" 1770488895 31637 1b7b445bc1e1b5bcd76ed10361d0955f ""
+  "/home/cheeseleopard/paper/template-ieee-transactions/bare_jrnl.tex" 1771110637 31752 f3457f8bd1a850a0f39cb8fc0ada4b48 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -79,8 +79,8 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1770468602 165012 f177baa1c39a3ebd62c3096a43521a0d ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1770468607 1435923 53ae82d8e71702b780b599960a9470bd ""
   "IEEEtran.cls" 1770468011 281957 5b2e4fa15b0f7eabb840ebf67df4c0f7 ""
-  "bare_jrnl.aux" 1770488895 1963 fa9e8962a2b633eb9ed0f4d53d165056 "pdflatex"
-  "bare_jrnl.tex" 1770488895 31637 1b7b445bc1e1b5bcd76ed10361d0955f ""
+  "bare_jrnl.aux" 1771110638 1963 fa9e8962a2b633eb9ed0f4d53d165056 "pdflatex"
+  "bare_jrnl.tex" 1771110637 31752 f3457f8bd1a850a0f39cb8fc0ada4b48 ""
   "fig/ReceiverMeasurementModule2_2.png" 1770468224 152299 f5801ae3b41b181f103cd55a1f9f4d3b ""
   (generated)
   "bare_jrnl.aux"

@@ -539,7 +539,7 @@ $$\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t;\thet
 \nabla_{\theta^\mu} \mu(s_t;\theta^\mu)]$$
 
 \subsubsection{Reward}
-
+The reward function is incorporated into the target function defining the direction we update the agent parameters.
 
 \subsection{Window Enforcement Module}
 For an RL-controlled CC, it is important that waiting agent for action generation should not block the TCP normal behaviour. Therefore, we decouple the Window Decision Module, Receiver Measurement Module and standard feature to ensure none of them will block any other. Therefore, an ACK response will not be delayed due to our scheme. 

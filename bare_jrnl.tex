@@ -421,16 +421,13 @@ This part is to be completed.
 \end{figure}
 
 \section{System Design}
-Our proposal contains three modules in the receiver side for adjusting sender $cwnd$, Receiver Measurement Module, Window Decision Module, and Window Enforcement Module.
-For better compatibility of our design, TCP sockets in both sender and receiver are extended or modified for adding interfaces and able to send three control messages to achieved our features.
+Our proposal is designed to be receiver-guided, and not blocking normal TCP behaviour. Therefore, we extended and modified the standard TCP to exchange message between receiver and sender, as well as between the receiver and agent. We introduce our control message design and the information exchange mechanism to enable receiver-guided congestion control for TCP. Then we present three modules in the receiver side for adjusting sender $cwnd$ relying on the receiver-guided method i.e., Receiver Measurement Module, Window Decision Module, and Window Enforcement Module.
+
 
 \subsection{Enable Receiver-Guided for TCP}
 
-\subsubsection{Control Message types definition}
-% The receiver TCP socket is extended to have features to communicate with our agent. We defined messages into three types 'state', 'action request', 'connection close' for agent to execute either store the states into its replay buffer, output an action, or clear the states for the closed connection.
-
-The receiver TCP socket is extended to support communication with the RL agent. 
-Three types of messages are defined:
+\subsubsection{Control Message}
+The receiver TCP socket is extended to support communication with the RL agent. In our design, generating an observation and an action are decoupled to ensure the packet communication will not be blocked by the agent inferrence. We define three types of control messages as following:
 
 \begin{itemize}
     \item \textbf{Observation Message}: carries the observed network status and is sent to the agent for storage in the replay buffer.
@@ -440,7 +437,7 @@ Three types of messages are defined:
     \item \textbf{Connection Close}: notifies the agent that a flow has terminated, allowing it to clear the corresponding internal states.
 \end{itemize}
 
-\subsubsection{Modified TCP}
+\subsubsection{Exchange information through Modified TCP}
 We utilise the window size field in TCP header to exchange the information required both by the receiver and the sender. In particular, the sender TCP is modified to include the current $cwnd$ value in the window size field of TCP header. For an enforced $cwnd$, when the receiver TCP receives an control signal from the Window Decision Module, it sets its state as control start, and keeps including the enforced $cwnd$ value into the window size field of ACK with \textbf{ECE}.
 When the sender receives an \textbf{ECE} ACK, it enters a window adjustment phase and overwirtes its current $cwnd$ to the enforced value. During this phase, replicative ACKs with \textbf{ECE} are ignored by the sender. Once the window adjustment is completed, the sender TCP will keep sending \textbf{CWR} packet and exit the window adjustment phase. Then, the receiver will reply with a \textbf{CWR} and both sender and receiver will exit the control phase. By applying the mechanism above, our design can achieve a value exchange that will not be lost due to packet loss that makes it possible for applying to multiple flows.
 

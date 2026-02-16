@@ -127,7 +127,8 @@
 % http://www.ctan.org/pkg/algorithmicx
 
 
-
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
 
 % *** ALIGNMENT PACKAGES ***
 %
@@ -385,8 +386,6 @@ IoT, TCP, congestion control, reinforcement learning.
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
 
-
-
 \section{Introduction}
 % The very first letter is a 2 line initial drop letter followed
 % by the rest of the first word in caps.
@@ -412,38 +411,58 @@ IoT, TCP, congestion control, reinforcement learning.
 \IEEEPARstart{T}{his} part is to be completed.
 
 \section{Related Works}
+This part is to be completed.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{./fig/SystemArchitecture2_7.png}
+\caption{System architecture of our proposal.}
+\label{SysArch}
+\end{figure}
 
 \section{System Design}
 Our proposal contains three modules in the receiver side for adjusting sender $cwnd$, Receiver Measurement Module, Window Decision Module, and Window Enforcement Module.
-Additionaly, TCP sockets in both sender and receiver are extended or modified for adding interfaces to achieved our features.
+For better compatibility of our design, TCP sockets in both sender and receiver are extended or modified for adding interfaces and able to send three control messages to achieved our features.
 
-\subsection{Control Message types definition}
+\subsection{Enable Receiver-Guided for TCP}
+
+\subsubsection{Control Message types definition}
 % The receiver TCP socket is extended to have features to communicate with our agent. We defined messages into three types 'state', 'action request', 'connection close' for agent to execute either store the states into its replay buffer, output an action, or clear the states for the closed connection.
 
 The receiver TCP socket is extended to support communication with the RL agent. 
 Three types of messages are defined:
 
 \begin{itemize}
-    \item \textbf{State}: carries the observed network state and is sent to the agent for storage in the replay buffer.
+    \item \textbf{Observation Message}: carries the observed network status and is sent to the agent for storage in the replay buffer.
     
     \item \textbf{Action Request}: triggers the agent to infer and return a control action based on the current state.
     
     \item \textbf{Connection Close}: notifies the agent that a flow has terminated, allowing it to clear the corresponding internal states.
 \end{itemize}
 
+\subsubsection{Modified TCP}
+
 \subsection{Receiver Measurement Module}
 Our scheme relies on reliable state observations to ensure stable training. Therefore, the states in our design are required to reflect the congestion extent while remaining observable at the receiver. Despite RTT is a fine-grained and valuable indicator of congestion, it is difficult to directly observe in the receiver side.
 
-To address this limitation, we derive a receiver-side congestion entent metric based on the $cwnd$ elapsed time. We extend the sender TCP feature to include its $cwnd$ in TCP header. 
-In standard TCP congestion avoidance, the congestion window $cwnd$ is increased by 1 MSS after an entire $cwnd$ bytes has been acknowledged, resulting in an approximate growth rate of 1 MSS per RTT, in which the method is named Additive Increment.
+To address the limitation above, we derive a receiver-side congestion extent metric based on the $cwnd$ elapsed time ($t_{elapsed}$). We extend the sender TCP feature to include its $cwnd$ in TCP header. 
+In standard TCP congestion avoidance, the congestion window $cwnd$ is increased by 1 MSS after an entire $cwnd$ bytes has been acknowledged. This nature results in an approximate growth rate of 1 MSS per RTT, in which the method is named Additive Increment.
 
 We utilise Additive Increment growing feature to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$.
 In particular, upon every packet receive event that includes a $cwnd$ value different from the last value received, the Receiver Measurement Module establishes a new estimation task.
 
-A new task is initialised with a record for the current flow state and a threshold ($\tau$), e.g., for flow $i$ started at time $t_0$ and estimated at time $t_j$, defined as below:
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{./fig/ReceiverMeasurementModule3.png}
+\caption{An example of estimation task completion of flow $i$.}
+\label{Estimation}
+\end{figure}
+
+A new task is initialised with a record ($Rec$) for the current flow state and a threshold ($\tau$), e.g., for flow $i$ started at time $t_0$ and estimated at time $t_j$, defined as below:
 \begin{equation}
-  record_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]
+  Rec_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]
 \end{equation} 
+where we set $\tau$ to be the sum of sequence number ($Seq_{i,t_j}$) and the $cwnd$ value from its header. We also maintain a cumulative received bytes ($RxBytes_{i,t}$) and cumulative packet losses ($Losses_{i,t}$) counter in the receiver TCP, defined as follows:
 \begin{equation}
   \tau_{i,t_j} = Seq_{i, t_j} + cwnd_{i,t_j}
 \end{equation}
@@ -453,23 +472,17 @@ A new task is initialised with a record for the current flow state and a thresho
 \begin{equation}
   L_i(t_j) = \sum_{n= t_0}^{t_j}Losses_{i, n}
 \end{equation} 
-An estimation task is completed at $t_{j+\Delta}$ when a coming packet is seen with a sequence number satisfying $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$.
-We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = t_{j+\Delta} - t_{j}$. We then calculate the goodput ($g_{i, t_j}$) and packet losses during the estimation task, where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$. and $\ell_{i,t_j} = L_i(t_{j+\Delta})-L_i(t_j)$. We then form an observation according to 
-$o_{i,t_j}=O(record_{i,t_{j+\Delta}},record_{i,t_{j}};\tau_{i,t_j})$, where the generation process is defined as follows:
-$$ O(record_{i,t_{j+\Delta}},record_{i,t_{j}};\tau_{i,t_j}) \triangleq \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
-The Receiver Measurement and State Generation process can be seen in Algorithm~\ref{alg:per_packet_state}.
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.9\linewidth]{./fig/ReceiverMeasurementModule2_2.png}
-\caption{An example of estimation task completion of flow $i$.}
-\label{Estimation}
-\end{figure}
+An estimation task is completed at $t_{j+\Delta}$ when a coming packet is seen with a sequence number satisfying $Seq_{i,t_{j+\Delta}} > \tau_{i,t_j}$.
+We calculate this task duration as the $cwnd$ elapsed time i.e., $t_{elapsed} = t_{j+\Delta} - t_{j}$. We then calculate the goodput ($g_{i, t_j}$) and packet losses during the estimation task, where $g_{i, t_j} = \frac{B_i(t_{j+\Delta})-B_i(t_j)}{t_{elapsed}}$. and $\ell_{i,t_j} = L_i(t_{j+\Delta})-L_i(t_j)$. Therefore, an observation is formed denoted as 
+$o_{i,t_j}=O(Rec_{i,t_{j+\Delta}},Rec_{i,t_{j}};\tau_{i,t_j})$, with the observation as the result of the generation process defined as follows:
+$$ O(Rec_{i,t_{j+\Delta}},Rec_{i,t_{j}};\tau_{i,t_j}) = \left[g_{i, t_j}, \ell_{i,t_j}, t_{elapsed}\right]$$
+The eventual observation is encapsulated into a Observation Message and sent to the Window Decision Module for storage. The consecutive process triggered by packet received event can be seen in Algorithm~\ref{alg:per_packet_state}.
 
 \begin{algorithm}[t]
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
-\caption{Receiver Measurement and State Generation}
+\caption{Receiver Measurement and Observation Generation}
 \label{alg:per_packet_state}
 \begin{algorithmic}[1]
 \Require Flow Id $i$, Time $t_j$, Arrived Packet $p_{i,t_j}$, Flow Observation Queue $q_i$
@@ -479,16 +492,16 @@ The Receiver Measurement and State Generation process can be seen in Algorithm~\
 \State Obtain $Losses_{i,t_j}$ from $TcpSocket_i$
 \State $B_i(t_j) = B_i(t_{j-1})+ Rx Bytes_{i, t_j}$
 \State $L_i(t_j) = L_i(t_{j-1}) + Losses_{i,t_j}$
-\State $record_{i,t_j}=\left[B_i(t_j), L_i(t_j), t_j\right]$
-\State Obtain $record_{i}^{head}$ and $\tau_{i}^{head}$ from the head of $q_i$
+\State $Rec_{i,t_j}=\left[B_i(t_j), L_i(t_j), t_j\right]$
+\State Obtain $Rec_{i}^{head}$ and $\tau_{i}^{head}$ from the head of $q_i$
 \If{$Seq_{i,t_j} \ge \tau_{i}^{head}$}
-  \State Dequeue $record_{i}^{head}$ and $\tau_{i}^{head}$ from $q_i$
-  \State $o_{i,t_{j}} = O(record_{i,t_j},record_{i}^{head})$
+  \State Dequeue $Rec_{i}^{head}$ and $\tau_{i}^{head}$ from $q_i$
+  \State $o_{i,t_{j}} = O(Rec_{i,t_j},Rec_{i}^{head})$
   % \State Send $o_{i,t_{j}}$ included into State Message to Agent
   \State Include $o_{i,t_{j}}$ into $M$
   \State Send $M$ to agent
 \ElsIf{$cwnd_{i,t_j} \neq cwnd_{i,t_{j-1}}$}
-  \State Enqueue $record_{i,t_j}$ and $\tau_{i,t_j}$ into $q_i$
+  \State Enqueue $Rec_{i,t_j}$ and $\tau_{i,t_j}$ into $q_i$
 \EndIf
 \end{algorithmic}
 \end{algorithm}
@@ -525,14 +538,39 @@ The Receiver Measurement and State Generation process can be seen in Algorithm~\
 
 \subsection{Window Decision Module}
 % action_block 这里写，算了，写agent吧
-Window Decision Module consists of a Reinforcement Learning model to output a scaling factor to underlying TCP socket and a periodic action request feature. An enforced congestion window is calculated with the factor by the underlying TCP socket and included in ACK to the sender. The sender will overwrite its $cwnd$ by the enforced congestion window. Therefore, to implement a continuous control to modified TCP, we choose Deep Deterministic Policy Gradient (DDPG) as agent in our design.
+Window Decision Module consists of a Reinforcement Learning model to output a scaling factor to underlying TCP socket periodically triggered by Action Request from Window Enforcement Module.
+An enforced congestion window is then calculated with the factor by the underlying TCP socket and included in ACK to the sender. The sender will overwrite its $cwnd$ by the enforced congestion window. Therefore, to implement a continuous control to modified TCP, we choose Deep Deterministic Policy Gradient (DDPG) as agent in our design.
+
+\subsubsection{State Generation}
+An observation is generated on the packet arrival event while the action is requested periodically. In our design, the action period is set to long enough to ensure we have multiple observations stored by an Observation Repository.Therefore, we first use an exponential weighted moving average (EWMA) filter to smooth the observations before storing them in the repository. This is done to mitigate the noise when the observation is generated in a varying network environment e.g., Wi-Fi. After storing, when an action request is received, the average of the stored observations during this action period is calculated as input to our agent, seen as follows when $n$ observations are stored:
+\begin{equation}
+  s_t = \left[  \frac{1}{n}\sum_{i=1}^{n}g_i, \frac{1}{n}\sum_{i=1}^{n}t_{elapsed,i} \right]
+\end{equation}
+
+\subsubsection{Reward Design}
+For improving network performance for each flow, the first component of our reward is based on network power metric to reflect individual flow performance, defined as follows:
+
+$$ r_{1,t} = \frac{\frac{1}{n}\sum_{i=1}^{n}g_i}{\frac{1}{n}\sum_{i=1}^{n}t_{elapsed,i}}$$
+
+We also take the advantage of the global performance store in repository to designe the second component for improving fairness among flows. Jain's fairness index is introduced considring $N$ flows defined as follows:
+$$r_{2,t} =
+\frac{\left(\sum_{i=1}^{N} \bar{g_i} \right)^2}
+{N \sum_{i=1}^{N} \bar{g_i^2}}$$
+Eventually, we design our reward as:
+\begin{equation}
+r_t =
+\begin{cases}
+-2, & \text{if } \ell_t > 0 \\
+r_{1,t} - (1 - r_{2,t})^2, & \text{otherwise}
+\end{cases}
+\end{equation}
 
 \subsubsection{Training}
 Our agent consists of an actor network determining a deterministic action $a = \mu(s;\theta^{\mu})$ parameterised by $\theta^{\mu}$ and a critic network to approximate the expected future return, defined as $Q(s,a;\theta^{Q}) = \mathbb{E}[R_t|s_t,a_t]$ with parameters $\theta^{Q}$. 
 The return $R_t$ is the sum of discounted future return, i.e., $R_t = \sum_{i=t}^{T}\gamma^{i-t}r(s_i,a_i)$. Approaching to the approximation is done by updating the critic network through minimising the mean square error between its output and a target function ($y_t$), shown as follows:
 $$ L(\theta^Q) = \mathbb{E}[(Q(s_t,a_t;\theta^{Q}) - y_t)^2] $$
 $$y_t=r(s_t,a_t) + \gamma Q^{-}(s_{t+1}, \mu^{-}(s_{t+1};\theta^{\mu^-});\theta^{Q^-})$$ 
-where $Q^{-}(s, a;\theta^{-})$ and $\mu^{-}(s;\theta^{\mu^-})$ are target critic network and target policy network. Their parameters are updated by calculating the exponetially weighted moving average of critic network and policy network, i.e., $\theta^{-} \leftarrow \tau \times \theta + (1-\tau)\times \theta^{-}$ where the $\tau$ is the weight parameter.
+where $Q^{-}(s, a;\theta^{-})$ and $\mu^{-}(s;\theta^{\mu^-})$ are target critic network and target policy network. Their parameters are updated by calculating the exponetially weighted moving average (EWMA) of critic network and policy network, i.e., $\theta^{-} \leftarrow \tau \times \theta + (1-\tau)\times \theta^{-}$ where the $\tau$ is the weight parameter.
 Subsequently, with the updated critic network, policy performance of current actor network is predicted, expressed as $J(\theta^\mu) = \mathbb{E}[Q(s_t,\mu(s_t;\theta^\mu))]$.
 Training an actor network is done by updating its paramters through policy performance gradient ascent. Specifically, by applying the chain rule, the gradient of the policy performance, is computed as:
 $$\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t;\theta^\mu))
@@ -542,24 +580,23 @@ $$\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t;\thet
 The reward function is incorporated into the target function defining the direction we update the agent parameters.
 
 \subsection{Window Enforcement Module}
-For an RL-controlled CC, it is important that waiting agent for action generation should not block the TCP normal behaviour. Therefore, we decouple the Window Decision Module, Receiver Measurement Module and standard feature to ensure none of them will block any other. Therefore, an ACK response will not be delayed due to our scheme. 
-In our design, an action request message will be sent to agent periodically by Window Decision Module. The resulting action is a factor within $[0,1]$. Once the Window Decision Module receive the action, it will extract the latest $cwnd$ in Receiver Measurement Module and compute the enforced congestion window using the following:
-$$cwnd_{enforced} = cwnd \times scaling\_factor ^ {a},\ n \in[0,1]$$
-Then the enforced $cwnd$ will be included into the ACK header and take effect at the sender side. For the receiver, the same action will keep effective untill the next action request.
+For an RL-controlled CC, it is important that waiting agent for action generation should not block the TCP normal behaviour. Therefore, we decouple the Window Decision Module, Receiver Measurement Module and standard feature to ensure none of them will block any other. Therefore, an ACK response will not be delayed in our scheme. 
+In our design, an action request message will be sent to agent periodically by Window Decision Module. The resulting action is a factor within $[0,1]$. Once the Window Decision Module receive the action, it will extract the latest $cwnd$ in Receiver Measurement Module and compute the enforced congestion window ($cwnd_{\mu}$) using the following:
+$$cwnd_{\mu} = cwnd \times scaling\_factor ^ {a},\ n \in[0,1]$$
+Then $cwnd_{\mu}$ will be included into the ACK header and take effect at the sender side.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\linewidth]{./fig/multi-to-one_Topo.png}
+  \caption{A multi-to-one flow scenario.}
+  \label{multi-to-one}
+\end{figure}
 
 \section{Simulation setup and results}
+Our scheme is implemented in NS-3 simulator. With the motivation to improve the performance of multiple flows to one receiver. We set up our topology as shown in Fig.~\ref{multi-to-one}. We compare our scheme with existing CC algorithms, i.e., NewReno, Cubic, and BBR.
+\subsection{3-flow scenario}
+In this schenario, we started three flows with a 10s interval. The three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme.
 
-
-% An example of a floating table. Note that, for IEEE style tables, the
-% \caption command should come BEFORE the table and, given that table
-% captions serve much like titles, are usually capitalized except for words
-% such as a, an, and, as, at, but, by, for, in, nor, of, on, or, the, to
-% and up, which are usually not capitalized unless they are the first or
-% last word of the caption. Table text will default to \footnotesize as
-% the IEEE normally uses this smaller font for tables.
-% The \label must come after \caption as always.
-%
 %\begin{table}[!t]
 %% increase table row spacing, adjust to taste
 %\renewcommand{\arraystretch}{1.3}

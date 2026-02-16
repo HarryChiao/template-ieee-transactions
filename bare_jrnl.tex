@@ -441,6 +441,8 @@ Three types of messages are defined:
 \end{itemize}
 
 \subsubsection{Modified TCP}
+We utilise the window size field in TCP header to exchange the information required both by the receiver and the sender. In particular, the sender TCP is modified to include the current $cwnd$ value in the window size field of TCP header. For an enforced $cwnd$, when the receiver TCP receives an control signal from the Window Decision Module, it sets its state as control start, and keeps including the enforced $cwnd$ value into the window size field of ACK with \textbf{ECE}.
+When the sender receives an \textbf{ECE} ACK, it enters a window adjustment phase and overwirtes its current $cwnd$ to the enforced value. During this phase, replicative ACKs with \textbf{ECE} are ignored by the sender. Once the window adjustment is completed, the sender TCP will keep sending \textbf{CWR} packet and exit the window adjustment phase. Then, the receiver will reply with a \textbf{CWR} and both sender and receiver will exit the control phase. By applying the mechanism above, our design can achieve a value exchange that will not be lost due to packet loss that makes it possible for applying to multiple flows.
 
 \subsection{Receiver Measurement Module}
 Our scheme relies on reliable state observations to ensure stable training. Therefore, the states in our design are required to reflect the congestion extent while remaining observable at the receiver. Despite RTT is a fine-grained and valuable indicator of congestion, it is difficult to directly observe in the receiver side.

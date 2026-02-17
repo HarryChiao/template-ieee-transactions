@@ -129,6 +129,8 @@
 
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
+% \usepackage{graphicx}
+\usepackage{subcaption}
 
 % *** ALIGNMENT PACKAGES ***
 %
@@ -549,12 +551,12 @@ An observation is generated on the packet arrival event while the action is requ
 \subsubsection{Reward Design}
 For improving network performance for each flow, the first component of our reward is based on network power metric to reflect individual flow performance, defined as follows:
 
-$$ r_{1,t} = \frac{\frac{1}{n}\sum_{i=1}^{n}g_i}{\frac{1}{n}\sum_{i=1}^{n}t_{elapsed,i}}$$
+$$ r_{1,t} = power = \frac{\frac{1}{n}\sum_{i=1}^{n}g_i}{\frac{1}{n}\sum_{i=1}^{n}t_{elapsed,i}}$$
 
-We also take the advantage of the global performance store in repository to designe the second component for improving fairness among flows. Jain's fairness index is introduced considring $N$ flows defined as follows:
-$$r_{2,t} =
+We also take the advantage of the global performance store in repository to designe the second component for improving fairness among flows. Jain's fairness index is introduced considring $N$ flows and $\bar{g_i} = \frac{1}{n} \sum_{i = 1}^{n} g_{i,t}$ defined as follows:
+$$r_{2,t} = J (\mathbf{\bar{g}}) = 
 \frac{\left(\sum_{i=1}^{N} \bar{g_i} \right)^2}
-{N \sum_{i=1}^{N} \bar{g_i^2}}$$
+{N \sum_{i=1}^{N}\bar{g}_{i}^2}$$
 Eventually, we design our reward as:
 \begin{equation}
 r_t =
@@ -575,9 +577,6 @@ Training an actor network is done by updating its paramters through policy perfo
 $$\nabla_{\theta^\mu} J(\theta^\mu) = \mathbb{E}[\nabla_{a_t}Q(s_t,\mu(s_t;\theta^\mu))
 \nabla_{\theta^\mu} \mu(s_t;\theta^\mu)]$$
 
-\subsubsection{Reward}
-The reward function is incorporated into the target function defining the direction we update the agent parameters.
-
 \subsection{Window Enforcement Module}
 For an RL-controlled CC, it is important that waiting agent for action generation should not block the TCP normal behaviour. Therefore, we decouple the Window Decision Module, Receiver Measurement Module and standard feature to ensure none of them will block any other. Therefore, an ACK response will not be delayed in our scheme. 
 In our design, an action request message will be sent to agent periodically by Window Decision Module. The resulting action is a factor within $[0,1]$. Once the Window Decision Module receive the action, it will extract the latest $cwnd$ in Receiver Measurement Module and compute the enforced congestion window ($cwnd_{\mu}$) using the following:
@@ -594,7 +593,44 @@ Then $cwnd_{\mu}$ will be included into the ACK header and take effect at the se
 \section{Simulation setup and results}
 Our scheme is implemented in NS-3 simulator. With the motivation to improve the performance of multiple flows to one receiver. We set up our topology as shown in Fig.~\ref{multi-to-one}. We compare our scheme with existing CC algorithms, i.e., NewReno, Cubic, and BBR.
 \subsection{3-flow scenario}
-In this schenario, we started three flows with a 10s interval. The three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme.
+In this schenario, we started three flows with a 10s interval. The three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme. We set the bandwidth in our topology respectively as 50 Mbps, 80 Mbps, and 100 Mbps. The base RTT is set to 20 ms in all simulations.
+
+\begin{figure}[t]
+  \centering
+
+  \begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_50.png}
+    \caption{Bottleneck bandwidth = 50 Mbps}
+  \end{subfigure}
+
+  \vspace{0.3cm}
+
+  \begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_80.png}
+    \caption{Bottleneck bandwidth = 80 Mbps}
+  \end{subfigure}
+
+  \vspace{0.3cm}
+
+  \begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_100.png}
+    \caption{Bottleneck bandwidth = 100 Mbps}
+  \end{subfigure}
+
+  \caption{Throughput comparison under different bottleneck bandwidths.}
+  \label{fig:throughput_compare}
+\end{figure}
+
+\subsubsection{Bandwidth set to 50 Mbps}
+We set the bandwidth of every link in our topology to 50 Mbps. Due to the multi-to-one flow scenario, the shared link is the bottleneck for all flows.
+
+\subsubsection{Bandwidth set to 80 Mbps}
+
+\subsubsection{Bandwidth set to 100 Mbps}
+
 
 %\begin{table}[!t]
 %% increase table row spacing, adjust to taste
@@ -651,8 +687,82 @@ The conclusion goes here.
 %
 
 
-% \appendices
-% \section{Proof of the First Zonklar Equation}
+\appendices
+\section{Proof of the First Zonklar Equation}
+\begin{figure*}
+  \centering
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png}
+    \caption{RGRL}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png}
+    \caption{BBR}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png}
+    \caption{Cubic}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png}
+    \caption{NewReno}
+  \end{subfigure}
+  \caption{Throughput and fairness performance of our scheme and baselines in 3-flow scenario with bandwidth set to 50 Mbps.}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png}
+    \caption{RGRL}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png}
+    \caption{BBR}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png}
+    \caption{Cubic}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png}
+    \caption{NewReno}
+  \end{subfigure}
+  \caption{Throughput and fairness performance of our scheme and baselines in 3-flow scenario with bandwidth set to 80 Mbps.}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png}
+    \caption{RGRL}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png}
+    \caption{BBR}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png}
+    \caption{Cubic}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.45\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png}
+    \caption{NewReno}
+  \end{subfigure}
+  \caption{Throughput and fairness performance of our scheme and baselines in 3-flow scenario with bandwidth set to 100 Mbps.}
+\end{figure*}
 % Appendix one text goes here.
 
 % % you can choose not to have a title for an appendix

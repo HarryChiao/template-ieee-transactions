@@ -583,112 +583,91 @@ In our design, an action request message will be sent to agent periodically by W
 $$cwnd_{\mu} = cwnd \times scaling\_factor ^ {a},\ n \in[0,1]$$
 Then $cwnd_{\mu}$ will be included into the ACK header and take effect at the sender side.
 
-\begin{figure}
+\begin{figure}[t]
   \centering
   \includegraphics[width=0.8\linewidth]{./fig/multi-to-one_Topo.png}
   \caption{A multi-to-one flow scenario.}
   \label{multi-to-one}
 \end{figure}
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\linewidth]{./sim_fig/episode_rewards_comparison.png}
+  \caption{Cumulative reward per episode.}
+  \label{fig:episode_reward}
+\end{figure}
+
 \section{Simulation setup and results}
 Our scheme is implemented in NS-3 simulator. With the motivation to improve the performance of multiple flows to one receiver. We set up our topology as shown in Fig.~\ref{multi-to-one}. We compare our scheme with existing CC algorithms, i.e., NewReno, Cubic, and BBR.
+
 \subsection{3-flow scenario}
-In this schenario, we started three flows with a 10s interval. The three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme. We set the bandwidth in our topology respectively as 50 Mbps, 80 Mbps, and 100 Mbps. The base RTT is set to 20 ms in all simulations.
+In this schenario, we started three flows with a 10s interval. The three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme. We set the bandwidth in our topology respectively as 50 Mbps, 80 Mbps, and 100 Mbps. The base RTT is set to 20 ms in all simulations. We trained our agent for 100 episodes where each is a simulation in NS-3. The reward per episode can be seen in Fig.~\ref{fig:episode_reward}. The average throughput and fairness performance of our scheme can be seen in Fig.~\ref{fig:throughput_compare}. For the fairness we calculated Jain Index for the three flows in their active period. We can see that out scheme RGRL can have a better fairness than other CC algorithm in all three bandwidth settings, i.e., around 0.98. Meanwhile, it is observed that BBR can achieve 0.88 in 50 Mbps case, which is decreased slightly when the bandwidth is lower, particularly, to 0.83 for 100 Mbps setting. NewReno Jain index is decreased significantly when the bandiwidth is higher, from 0.88 in 50 Mbps to 0.5536 in 100 Mbps. Cubic achieves a good performance, 0.9592 only in 80 Mbps setting while remains lower than 0.80 in other cases. Overall, RGRL advantage is more significant when the bandwidth is higher. 
+
+We also present the average RTT of flow for each CC algorithm that can be seen in Fig.~\ref{fig:rtt_compare}. Despite Cubic and NewReno achieves satisfying fairness performance in specific setting, they are out of the cost of RTT from recklessly increasing $cwnd$, i.e., over 60 ms for NewReno and at least 59.93 for Cubic among the cases. The latter can achieve even 98.44 ms in 50 Mbps setting. While our scheme can achieve a low average RTT better than BBR in 50 Mbps and 80 Mbps. For the 100 Mbps, our scheme can achieve preferable performance to 33.02 ms similar to BBR's 31.99 ms. In terms of convergence, BBR has problem that one flow can get lower share of the bandwidth that is not significantly shown in jain index but in real time throughput.
+The throughput over time in the three settings can be seen in Fig~\ref{fig:Tput_time_50}, Fig.~\ref{fig:Tput_time_80}, and Fig.~\ref{fig:Tput_time_100}.
+
+\subsection{FCT in random flow scenario}
+
+% \begin{figure}[t]
+%   \centering
+%   \begin{subfigure}{\linewidth}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_50.png}
+%     \caption{Bottleneck bandwidth = 50 Mbps}
+%   \end{subfigure}
+%   \vspace{0.3cm}
+%   \begin{subfigure}{\linewidth}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_80.png}
+%     \caption{Bottleneck bandwidth = 80 Mbps}
+%   \end{subfigure}
+%   \vspace{0.3cm}
+%   \begin{subfigure}{\linewidth}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_100.png}
+%     \caption{Bottleneck bandwidth = 100 Mbps}
+%   \end{subfigure}
+%   \caption{Throughput comparison under different bottleneck bandwidths.}
+%   \label{fig:throughput_compare}
+% \end{figure}
 
 \begin{figure}[t]
   \centering
-
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_50.png}
-    \caption{Bottleneck bandwidth = 50 Mbps}
-  \end{subfigure}
-
-  \vspace{0.3cm}
-
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_80.png}
-    \caption{Bottleneck bandwidth = 80 Mbps}
-  \end{subfigure}
-
-  \vspace{0.3cm}
-
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_100.png}
-    \caption{Bottleneck bandwidth = 100 Mbps}
-  \end{subfigure}
-
+  \includegraphics[width=\linewidth]{sim_fig/throughput_compare_all_shaded.png}
   \caption{Throughput comparison under different bottleneck bandwidths.}
   \label{fig:throughput_compare}
 \end{figure}
 
-\subsubsection{Bandwidth set to 50 Mbps}
-We set the bandwidth of every link in our topology to 50 Mbps. Due to the multi-to-one flow scenario, the shared link is the bottleneck for all flows.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{sim_fig/rtt_compare_all_shaded.png}
+  \caption{RTT comparison under different bottleneck bandwidths.}
+  \label{fig:rtt_compare}
+\end{figure}
 
-\subsubsection{Bandwidth set to 80 Mbps}
+% \begin{figure}[t]
+%   \centering
+%   \begin{subfigure}{\linewidth}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{./sim_fig/rtt_compare_50.png}
+%     \caption{Bottleneck bandwidth = 50 Mbps}
+%   \end{subfigure}
+%   \vspace{0.3cm}
+%   \begin{subfigure}{\linewidth}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{./sim_fig/rtt_compare_80.png}
+%     \caption{Bottleneck bandwidth = 80 Mbps}
+%   \end{subfigure}
+%   \vspace{0.3cm}
+%   \begin{subfigure}{\linewidth}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{./sim_fig/rtt_compare_100.png}
+%     \caption{Bottleneck bandwidth = 100 Mbps}
+%   \end{subfigure}
+%   \caption{RTT comparison under different bottleneck bandwidths.}
+%   \label{fig:rtt_compare}
+% \end{figure}
 
-\subsubsection{Bandwidth set to 100 Mbps}
-
-
-%\begin{table}[!t]
-%% increase table row spacing, adjust to taste
-%\renewcommand{\arraystretch}{1.3}
-% if using array.sty, it might be a good idea to tweak the value of
-% \extrarowheight as needed to properly center the text within the cells
-%\caption{An Example of a Table}
-%\label{table_example}
-%\centering
-%% Some packages, such as MDW tools, offer better commands for making tables
-%% than the plain LaTeX2e tabular which is used here.
-%\begin{tabular}{|c||c|}
-%\hline
-%One & Two\\
-%\hline
-%Three & Four\\
-%\hline
-%\end{tabular}
-%\end{table}
-
-
-% Note that the IEEE does not put floats in the very first column
-% - or typically anywhere on the first page for that matter. Also,
-% in-text middle ("here") positioning is typically not used, but it
-% is allowed and encouraged for Computer Society conferences (but
-% not Computer Society journals). Most IEEE journals/conferences use
-% top floats exclusively. 
-% Note that, LaTeX2e, unlike IEEE journals/conferences, places
-% footnotes above bottom floats. This can be corrected via the
-% \fnbelowfloat command of the stfloats package.
-
-
-
-
-\section{Conclusion}
-The conclusion goes here.
-
-
-
-
-
-% if have a single appendix:
-%\appendix[Proof of the Zonklar Equations]
-% or
-%\appendix  % for no appendix heading
-% do not use \section anymore after \appendix, only \section*
-% is possibly needed
-
-% use appendices with more than one appendix
-% then use \section to start each appendix
-% you must declare a \section before using any
-% \subsection or using \label (\appendices by itself
-% starts a section numbered zero.)
-%
-
-
-\appendices
-\section{Proof of the First Zonklar Equation}
 \begin{figure*}
   \centering
   \begin{subfigure}[h]{0.45\linewidth}
@@ -712,6 +691,7 @@ The conclusion goes here.
     \caption{NewReno}
   \end{subfigure}
   \caption{Throughput and fairness performance of our scheme and baselines in 3-flow scenario with bandwidth set to 50 Mbps.}
+  \label{fig:Tput_time_50}
 \end{figure*}
 
 \begin{figure*}
@@ -737,6 +717,7 @@ The conclusion goes here.
     \caption{NewReno}
   \end{subfigure}
   \caption{Throughput and fairness performance of our scheme and baselines in 3-flow scenario with bandwidth set to 80 Mbps.}
+  \label{fig:Tput_time_80}
 \end{figure*}
 
 \begin{figure*}
@@ -762,7 +743,45 @@ The conclusion goes here.
     \caption{NewReno}
   \end{subfigure}
   \caption{Throughput and fairness performance of our scheme and baselines in 3-flow scenario with bandwidth set to 100 Mbps.}
+  \label{fig:Tput_time_100}
 \end{figure*}
+
+%\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+%\caption{An Example of a Table}
+%\label{table_example}
+%\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{table}
+
+\section{Conclusion}
+The conclusion goes here.
+
+% if have a single appendix:
+%\appendix[Proof of the Zonklar Equations]
+% or
+%\appendix  % for no appendix heading
+% do not use \section anymore after \appendix, only \section*
+% is possibly needed
+
+% use appendices with more than one appendix
+% then use \section to start each appendix
+% you must declare a \section before using any
+% \subsection or using \label (\appendices by itself
+% starts a section numbered zero.)
+%
+
 % Appendix one text goes here.
 
 % % you can choose not to have a title for an appendix

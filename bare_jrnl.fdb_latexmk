@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1771349314.08336 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1771349315.6033 0
-  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1771349313.87286 39679 71c9517f4d1d0929aae117b8dfc93b2f ""
+["pdflatex"] 1771429662.51031 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1771429664.07948 0
+  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1771429662.28588 42230 b8ac64fd3238f463e969267503e430e4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -155,8 +155,8 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1760078696 3345732 a98826f32f6b110a89caac5b228d63d0 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "IEEEtran.cls" 1761831166.21946 281957 5b2e4fa15b0f7eabb840ebf67df4c0f7 ""
-  "bare_jrnl.aux" 1771349315.52862 4354 cf53857850a81e4f1684abe22244bdbc "pdflatex"
-  "bare_jrnl.tex" 1771349313.87286 39679 71c9517f4d1d0929aae117b8dfc93b2f ""
+  "bare_jrnl.aux" 1771429664.00803 4497 b1097e3235937d1e70f868c3b51fcfdc "pdflatex"
+  "bare_jrnl.tex" 1771429662.28588 42230 b8ac64fd3238f463e969267503e430e4 ""
   "fig/ReceiverMeasurementModule3.png" 1770897122.24369 81527 0c5a1d7f3943a083822ae549fb6c521c ""
   "fig/SystemArchitecture2_7.png" 1770893753.32043 91846 045fca62dab271c6df24bcef596ed9ae ""
   "fig/multi-to-one_Topo.png" 1771001462.16608 49018 212426ee9a010d286158ed4661339378 ""
@@ -172,9 +172,9 @@
   "sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png" 1771348906.88657 67820 67b0e3fa44cfcfeab6b1454e6e438219 ""
   "sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png" 1771348906.98483 54736 40a09ea3aa528bd3133c9b723e78b42d ""
   "sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png" 1771348907.09341 54175 a53341325771ad4a94283999a21be099 ""
-  "sim_fig/throughput_compare_100.png" 1771348819.91934 32516 fa9217388bb93f28112c17d912cc80ce ""
-  "sim_fig/throughput_compare_50.png" 1771348819.91144 31667 73ce5169d9af62723e2cc50fa2e0df50 ""
-  "sim_fig/throughput_compare_80.png" 1771348819.91597 33138 6ac54a39fc76cd3bf189d881bfbd597d ""
+  "sim_fig/episode_rewards_comparison.png" 1771419210.18925 55196 5f9fc894e1ccfcdeabae76ae89d67022 ""
+  "sim_fig/rtt_compare_all_shaded.png" 1771429470.9183 80622 41e2f77dc25c5d6a2c78baa0476a5d4c ""
+  "sim_fig/throughput_compare_all_shaded.png" 1771429470.90765 88450 a9f90ecd381ba04c03c52501a582a6e3 ""
   (generated)
   "bare_jrnl.aux"
   "bare_jrnl.log"

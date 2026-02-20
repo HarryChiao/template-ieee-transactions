@@ -619,12 +619,45 @@ Our scheme is implemented in NS-3 simulator. With the motivation to improve the 
 \end{figure}
 
 \subsection{3-flow scenario}
-In this schenario, we started three flows with a 10s interval. The three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme. We set the bandwidth in our topology respectively as 50 Mbps, 80 Mbps, and 100 Mbps. The base RTT is set to 20 ms in all simulations. We trained our agent for 100 episodes where each is a simulation in NS-3. The reward per episode can be seen in Fig.~\ref{fig:episode_reward}. The average throughput and fairness performance of our scheme can be seen in Fig.~\ref{fig:throughput_compare_1}. For the fairness we calculated Jain Index for the three flows in their active period. We can see that out scheme RGRL can have a better fairness than other CC algorithm in all three bandwidth settings, i.e., around 0.98. Meanwhile, it is observed that BBR can achieve 0.88 in 50 Mbps case, which is decreased slightly when the bandwidth is lower, particularly, to 0.83 for 100 Mbps setting. NewReno Jain index is decreased significantly when the bandiwidth is higher, from 0.88 in 50 Mbps to 0.5536 in 100 Mbps. Cubic achieves a good performance, 0.9592 only in 80 Mbps setting while remains lower than 0.80 in other cases. Overall, RGRL advantage is more significant when the bandwidth is higher. 
+In this schenario, we started three flows with a 10s interval. The three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme. We set the bandwidth in our topology respectively as 50 Mbps, 80 Mbps, and 100 Mbps. The base RTT is set to 20 ms in all simulations.
+
+We trained our agent for 100 episodes where each is a simulation in NS-3. The reward per episode can be seen in Fig.~\ref{fig:episode_reward}. The average throughput and fairness performance of our scheme can be seen in Fig.~\ref{fig:throughput_compare_1}. For the fairness we calculated Jain Index for the three flows in their active period. We can see that out scheme RGRL can have a better fairness than other CC algorithm in all three bandwidth settings, i.e., around 0.98. Meanwhile, it is observed that BBR can achieve 0.88 in 50 Mbps case, which is decreased slightly when the bandwidth is lower, particularly, to 0.83 for 100 Mbps setting. NewReno Jain index is decreased significantly when the bandiwidth is higher, from 0.88 in 50 Mbps to 0.5536 in 100 Mbps. Cubic achieves a good performance, 0.9592 only in 80 Mbps setting while remains lower than 0.80 in other cases. Overall, RGRL advantage is more significant when the bandwidth is higher. 
 
 We also present the average RTT of flow for each CC algorithm that can be seen in Fig.~\ref{fig:rtt_compare_1}. Despite Cubic and NewReno achieves satisfying fairness performance in specific setting, they are out of the cost of RTT from recklessly increasing $cwnd$, i.e., over 60 ms for NewReno and at least 59.93 for Cubic among the cases. The latter can achieve even 98.44 ms in 50 Mbps setting. While our scheme can achieve a low average RTT better than BBR in 50 Mbps and 80 Mbps. For the 100 Mbps, our scheme can achieve preferable performance to 33.02 ms similar to BBR's 31.99 ms. In terms of convergence, BBR has problem that one flow can get lower share of the bandwidth that is not significantly shown in jain index but in real time throughput.
 The throughput over time in the three settings can be seen in Fig~\ref{fig:Tput_time_50}, Fig.~\ref{fig:Tput_time_80}, and Fig.~\ref{fig:Tput_time_100}.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{./sim_fig/50nodes/fct_cdf_compare.png}
+  \caption{Flow completion time comparison of 50 IoT nodes using wired connection.}
+  \label{fig:fct_50}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{./sim_fig/50nodes/pkt_loss_bar.png}
+  \caption{Packet losses comparison of 50 IoT nodes using wired connection.}
+  \label{fig:pktloss_50}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{./sim_fig/30nodes-wifi/fct_cdf_compare.png}
+  \caption{Flow completion time comparison of 30 IoT nodes using WiFi.}
+  \label{fig:fct_30}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{./sim_fig/30nodes-wifi/pkt_loss_bar.png}
+  \caption{Packet losses comparison of 30 IoT nodes using WiFi.}
+  \label{fig:pktloss_30}
+\end{figure}
+
 \subsection{FCT in random flow scenario}
+We also tested random flows for simulating IoT traffic pattern. Therefore, all IoT nodes are set to send messages with the same period. Their first messages are initialised following the uniform distribution within the period. In our setting, the sending period is set to 0.5s. The message are set to 1 MB delivered as packets sized of 1448 bytes. We compared our scheme performance with other CC algorithm in two scenrios, i.e., (i) 50 IoT nodes with 100 Mbps bandwidth wired connection using topology shown as Fig.~\ref{multi-to-one}, and (ii) 30 IoT nodes using WiFi. Both scenrios last for 50 seconds.
+
+In scenario (i), we compare the flow completion time shown as in Fig.~\ref{fig:fct_50} where the best performances are highlighted. Our scheme has the lowest FCT at P90 and P95 reducing the tail latency. Despite other CC algorithms have lower FCT at P50, they are out of cost of more packet losses hurting the communication reliability. Our scheme has the least packets losses with lower tail latency.
 
 % \begin{figure}[t]
 %   \centering

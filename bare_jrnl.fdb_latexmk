@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1771431092.39544 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1771431093.89393 0
-  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1771431090.5453 42791 6910bb3f2c6e2239aa871142e88213ba ""
+["pdflatex"] 1771587547.71952 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1771587549.80054 0
+  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1771587498.68955 44679 c78ef48350d46b69648b17ce01924f85 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -155,8 +155,8 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1760078696 3345732 a98826f32f6b110a89caac5b228d63d0 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "IEEEtran.cls" 1761831166.21946 281957 5b2e4fa15b0f7eabb840ebf67df4c0f7 ""
-  "bare_jrnl.aux" 1771431093.82771 4485 c4440d54436831fd5f1dec5376b18f2a "pdflatex"
-  "bare_jrnl.tex" 1771431090.5453 42791 6910bb3f2c6e2239aa871142e88213ba ""
+  "bare_jrnl.aux" 1771587549.72198 5336 0cb4afed0d29f699644f6118b28cc60d "pdflatex"
+  "bare_jrnl.tex" 1771587498.68955 44679 c78ef48350d46b69648b17ce01924f85 ""
   "fig/ReceiverMeasurementModule3.png" 1770897122.24369 81527 0c5a1d7f3943a083822ae549fb6c521c ""
   "fig/SystemArchitecture2_7.png" 1770893753.32043 91846 045fca62dab271c6df24bcef596ed9ae ""
   "fig/multi-to-one_Topo.png" 1771001462.16608 49018 212426ee9a010d286158ed4661339378 ""
@@ -172,6 +172,10 @@
   "sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png" 1771348906.88657 67820 67b0e3fa44cfcfeab6b1454e6e438219 ""
   "sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png" 1771348906.98483 54736 40a09ea3aa528bd3133c9b723e78b42d ""
   "sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png" 1771348907.09341 54175 a53341325771ad4a94283999a21be099 ""
+  "sim_fig/30nodes-wifi/fct_cdf_compare.png" 1771587547.11663 136369 ce712c45b2476755fea79eb5481a0d7e ""
+  "sim_fig/30nodes-wifi/pkt_loss_bar.png" 1771587343.20636 19603 f5c078bc8c10bc58fa2016beee3069b1 ""
+  "sim_fig/50nodes/fct_cdf_compare.png" 1771585565.10085 131321 d103a03daf9d76af6910dd1c3a1b27c6 ""
+  "sim_fig/50nodes/pkt_loss_bar.png" 1771586753.30076 18911 66d968d9664ccde40d4c693b129d3e6a ""
   "sim_fig/episode_rewards_comparison.png" 1771419210.18925 55196 5f9fc894e1ccfcdeabae76ae89d67022 ""
   "sim_fig/rtt_compare_all_shaded.png" 1771430735.90366 75037 e70e1a9ba9251441ff141b25f3478565 ""
   "sim_fig/throughput_compare_all_shaded.png" 1771430735.89415 84633 2acc5c18fd021a071019b0e9c9fc3075 ""

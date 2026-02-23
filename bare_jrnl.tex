@@ -657,7 +657,9 @@ The throughput over time in the three settings can be seen in Fig~\ref{fig:Tput_
 \subsection{FCT in random flow scenario}
 We also tested random flows for simulating IoT traffic pattern. Therefore, all IoT nodes are set to send messages with the same period. Their first messages are initialised following the uniform distribution within the period. In our setting, the sending period is set to 0.5s. The message are set to 1 MB delivered as packets sized of 1448 bytes. We compared our scheme performance with other CC algorithm in two scenrios, i.e., (i) 50 IoT nodes with 100 Mbps bandwidth wired connection using topology shown as Fig.~\ref{multi-to-one}, and (ii) 30 IoT nodes using WiFi. Both scenrios last for 50 seconds.
 
-In scenario (i), we compare the flow completion time shown as in Fig.~\ref{fig:fct_50} where the best performances are highlighted. Our scheme has the lowest FCT at P90 and P95 reducing the tail latency. Despite other CC algorithms have lower FCT at P50, they are out of cost of more packet losses hurting the communication reliability. Our scheme has the least packets losses with lower tail latency.
+In scenario (i), we compare the flow completion time (FCT) shown as in Fig.~\ref{fig:fct_50} where the best performances are highlighted. Our scheme has the lowest FCT at P90 and P95 reducing the tail latency. Despite other CC algorithms have lower FCT at P50, they are out of cost of more packet losses hurting the communication reliability. Our scheme has the least packets losses with lower tail latency.
+
+In scenario (ii), the FCT is shown in Fig.~\ref{fig:fct_30}.
 
 % \begin{figure}[t]
 %   \centering

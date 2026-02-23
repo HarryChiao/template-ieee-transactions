@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.10.10)  20 FEB 2026 11:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.10.10)  20 FEB 2026 12:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -596,70 +596,68 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 <./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png, id=54, 451.6875pt x 333.1647pt>
 File: ./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png  used on input line 726.
+Package pdftex.def Info: ./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png  used on input line 728.
 (pdftex.def)             Requested size: 232.19843pt x 171.27417pt.
 <./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png, id=55, 455.301pt x 333.1647pt>
 File: ./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png  used on input line 731.
+Package pdftex.def Info: ./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png  used on input line 733.
 (pdftex.def)             Requested size: 232.19843pt x 169.90666pt.
 <./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png, id=56, 450.9648pt x 333.1647pt>
 File: ./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png  used on input line 736.
+Package pdftex.def Info: ./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png  used on input line 738.
 (pdftex.def)             Requested size: 232.19843pt x 171.5436pt.
 <./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png, id=57, 442.2924pt x 333.1647pt>
 File: ./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png  used on input line 741.
+Package pdftex.def Info: ./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png  used on input line 743.
 (pdftex.def)             Requested size: 232.19843pt x 174.909pt.
 <./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png, id=58, 451.6875pt x 333.1647pt>
 File: ./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png  used on input line 752.
+Package pdftex.def Info: ./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png  used on input line 754.
 (pdftex.def)             Requested size: 232.19843pt x 171.27417pt.
 <./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png, id=59, 455.301pt x 333.1647pt>
 File: ./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png  used on input line 757.
+Package pdftex.def Info: ./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png  used on input line 759.
 (pdftex.def)             Requested size: 232.19843pt x 169.90666pt.
 <./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png, id=60, 450.9648pt x 333.1647pt>
 File: ./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png  used on input line 762.
+Package pdftex.def Info: ./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png  used on input line 764.
 (pdftex.def)             Requested size: 232.19843pt x 171.5436pt.
 <./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png, id=61, 442.2924pt x 333.1647pt>
 File: ./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png  used on input line 767.
+Package pdftex.def Info: ./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png  used on input line 769.
 (pdftex.def)             Requested size: 232.19843pt x 174.909pt.
 <./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png, id=62, 455.301pt x 333.1647pt>
 File: ./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png  used on input line 778.
+Package pdftex.def Info: ./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png  used on input line 780.
 (pdftex.def)             Requested size: 232.19843pt x 169.90666pt.
 <./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png, id=63, 455.301pt x 333.1647pt>
 File: ./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png  used on input line 783.
+Package pdftex.def Info: ./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png  used on input line 785.
 (pdftex.def)             Requested size: 232.19843pt x 169.90666pt.
 <./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png, id=64, 455.301pt x 333.1647pt>
 File: ./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png  used on input line 788.
+Package pdftex.def Info: ./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png  used on input line 790.
 (pdftex.def)             Requested size: 232.19843pt x 169.90666pt.
 <./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png, id=65, 442.2924pt x 333.1647pt>
 File: ./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png Graphic file (type png)
 <use ./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png>
-Package pdftex.def Info: ./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png  used on input line 793.
+Package pdftex.def Info: ./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png  used on input line 795.
 (pdftex.def)             Requested size: 232.19843pt x 174.909pt.
 
 
 
 
-[5
-
- <./sim_fig/30nodes-wifi/fct_cdf_compare.png> <./sim_fig/30nodes-wifi/pkt_loss_bar.png>] [6 <./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png> <./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png> <./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png> <./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png>] [7 <./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png> <./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png> <./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png> <./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png>] [8 <./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png> <./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png> <./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png> <./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png>] (./bare_jrnl.aux)
+[5 <./sim_fig/30nodes-wifi/fct_cdf_compare.png> <./sim_fig/30nodes-wifi/pkt_loss_bar.png>] [6 <./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png> <./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png> <./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png> <./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png>] [7 <./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png> <./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png> <./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png> <./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png>] [8 <./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png> <./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png> <./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png> <./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png>] (./bare_jrnl.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -674,7 +672,7 @@ Here is how much of TeX's memory you used:
  1144 hyphenation exceptions out of 8191
  84i,9n,91p,1083b,476s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on bare_jrnl.pdf (8 pages, 1334668 bytes).
+Output written on bare_jrnl.pdf (8 pages, 1334706 bytes).
 PDF statistics:
  165 PDF objects out of 1000 (max. 8388607)
  76 compressed objects within 1 object stream

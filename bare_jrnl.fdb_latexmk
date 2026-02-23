@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1771587547.71952 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1771587549.80054 0
-  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1771587498.68955 44679 c78ef48350d46b69648b17ce01924f85 ""
+["pdflatex"] 1771590487.02495 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1771590489.22375 0
+  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1771590486.35016 44747 e8cf789ccc7ea2b1f8158391709f3247 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -155,8 +155,8 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1760078696 3345732 a98826f32f6b110a89caac5b228d63d0 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "IEEEtran.cls" 1761831166.21946 281957 5b2e4fa15b0f7eabb840ebf67df4c0f7 ""
-  "bare_jrnl.aux" 1771587549.72198 5336 0cb4afed0d29f699644f6118b28cc60d "pdflatex"
-  "bare_jrnl.tex" 1771587498.68955 44679 c78ef48350d46b69648b17ce01924f85 ""
+  "bare_jrnl.aux" 1771590489.12911 5336 0cb4afed0d29f699644f6118b28cc60d "pdflatex"
+  "bare_jrnl.tex" 1771590486.35016 44747 e8cf789ccc7ea2b1f8158391709f3247 ""
   "fig/ReceiverMeasurementModule3.png" 1770897122.24369 81527 0c5a1d7f3943a083822ae549fb6c521c ""
   "fig/SystemArchitecture2_7.png" 1770893753.32043 91846 045fca62dab271c6df24bcef596ed9ae ""
   "fig/multi-to-one_Topo.png" 1771001462.16608 49018 212426ee9a010d286158ed4661339378 ""

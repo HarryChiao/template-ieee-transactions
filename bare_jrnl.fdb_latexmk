@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex bare_jrnl"] 1771948983.0128 "bare_jrnl.aux" "bare_jrnl.bbl" "bare_jrnl" 1771949488.00548 0
+["bibtex bare_jrnl"] 1771948983.0128 "bare_jrnl.aux" "bare_jrnl.bbl" "bare_jrnl" 1771949916.59586 0
   "./references.bib" 1771942266.81366 679 5876c73f2758c0c5b162cd4e2f3d9494 ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/ieeetran/IEEEtran.bst" 1440712899 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "bare_jrnl.aux" 1771949487.74053 5464 9d66d9db5597120a318250f2d8dd5ba4 "pdflatex"
+  "bare_jrnl.aux" 1771949916.32151 5464 9d66d9db5597120a318250f2d8dd5ba4 "pdflatex"
   (generated)
   "bare_jrnl.bbl"
   "bare_jrnl.blg"
   (rewritten before read)
-["pdflatex"] 1771949485.87892 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1771949488.00564 0
-  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1771949485.62515 38697 acb2b5e2cceec312666821a7867016af ""
+["pdflatex"] 1771949914.35717 "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" "bare_jrnl.pdf" "bare_jrnl" 1771949916.59603 0
+  "/Users/cheese_leopard/Desktop/Codes/Latex/Receiver-side Congestion Control Fairness/bare_jrnl.tex" 1771949914.0241 38702 5ab9b2d430d5e3493f246dc738e53ab6 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -154,9 +154,9 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1760078696 3345732 a98826f32f6b110a89caac5b228d63d0 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "IEEEtran.cls" 1761831166.21946 281957 5b2e4fa15b0f7eabb840ebf67df4c0f7 ""
-  "bare_jrnl.aux" 1771949487.74053 5464 9d66d9db5597120a318250f2d8dd5ba4 "pdflatex"
+  "bare_jrnl.aux" 1771949916.32151 5464 9d66d9db5597120a318250f2d8dd5ba4 "pdflatex"
   "bare_jrnl.bbl" 1771948983.22843 1355 15f79d961ea27b8d6b37053b133a36e0 "bibtex bare_jrnl"
-  "bare_jrnl.tex" 1771949485.62515 38697 acb2b5e2cceec312666821a7867016af ""
+  "bare_jrnl.tex" 1771949914.0241 38702 5ab9b2d430d5e3493f246dc738e53ab6 ""
   "fig/ReceiverMeasurementModule3.png" 1770897122.24369 81527 0c5a1d7f3943a083822ae549fb6c521c ""
   "fig/SystemArchitecture2_7.png" 1770893753.32043 91846 045fca62dab271c6df24bcef596ed9ae ""
   "fig/multi-to-one_Topo.png" 1771001462.16608 49018 212426ee9a010d286158ed4661339378 ""

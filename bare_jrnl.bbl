@@ -56,6 +56,9 @@ W.~Li, F.~Zhou, K.~R. Chowdhury, and W.~Meleis, ``Qtcp: Adaptive congestion cont
 \bibitem{jay2019deep}
 N.~Jay, N.~Rotman, B.~Godfrey, M.~Schapira, and A.~Tamar, ``A deep reinforcement learning perspective on internet congestion control,'' in \emph{International conference on machine learning}.\hskip 1em plus 0.5em minus 0.4em\relax PMLR, 2019, pp. 3050--3059.
 
+\bibitem{dong2018pcc}
+M.~Dong, T.~Meng, D.~Zarchy, E.~Arslan, Y.~Gilad, B.~Godfrey, and M.~Schapira, ``$\{$PCC$\}$ vivace:$\{$Online-Learning$\}$ congestion control,'' in \emph{15th USENIX symposium on networked systems design and implementation (NSDI 18)}, 2018, pp. 343--356.
+
 \bibitem{abbasloo2020classic}
 S.~Abbasloo, C.-Y. Yen, and H.~J. Chao, ``Classic meets modern: A pragmatic learning-based congestion control for the internet,'' in \emph{Proceedings of the Annual conference of the ACM Special Interest Group on Data Communication on the applications, technologies, architectures, and protocols for computer communication}, 2020, pp. 632--647.
 

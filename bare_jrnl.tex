@@ -178,13 +178,19 @@ Conventional CCs relies on loss as congestion indicator, e.g., NewReno \cite{flo
 
 Abundant CC schemes optimised for large scale of traffics are accomplished in data centre networks, where the base RTT is much lower than IoT networks, e.g., hundreds of microseconds \cite{alizadeh2010data}. In DCTCP the researchers utilise explicit congestion notification (ECN) marking to make the TCP sender response to the congestion with a adaptive extent to achieve a better fairness and low latency for senders of larger scales. DCTCP accomplished a lower flow completion time compared to traditional TCP. However, DCTCP is specified for data centre is not claimed to apply to wider network like IoT networks. In SAB \cite{zhang2013sharing}, the researchers achieve a better fairness with lower queueing delay in the circumstance that when bottleneck buffer size is larger bandwidth delay product (BDP). However, their proposal requires massive modifications to the intermediate nodes. For a service through the internet, the intermediate nodes that forms a backlog is hard to obtain, along with the requirement of the suitable buffer size should be determined according to the BDP in the network.
 
-Reinforcement Learning (RL) is considered a potential solution to the dynamic environment by learning a policy to interact with the environment \cite{li2018qtcp, jay2019deep, abbasloo2020classic}. % 补充rl的部分
-However, it is observed in \cite{giacomoni2024reinforcement} that in most scenarios the exisiting RL-based CCs have unfairness problem. The researchers also point out that exisiting RL-based CCs focusing on capturing available bandiwidth switfly but introducing severe packet losses in normal operation.
+Reinforcement Learning (RL) is considered a potential solution to the dynamic environment by learning a policy to interact with the environment.
+QTCP \cite{li2018qtcp} leverages Q-Learning to control sender CWND reling on the difference between a defined utility function value of the latest two steps.
+Aurora \cite{jay2019deep} is described as a framework extended from PCC \cite{dong2018pcc}, where the researchers introduce neural network in their RL design aim to make CC adapt to varying network scenarios. Fairness, multiple objectives, and adaptation to dynamic network conditions remain the key challenges in RL-based CCs.
+Orca \cite{abbasloo2020classic} is trained in a hybrid scheme that employs both advanced DRL and classic CCs. They demonstrate the RL-based schemes challenges are converge to bandwidth, performances issues over unseen conditions, and computation overhead.
+It is observed in \cite{giacomoni2024reinforcement} that in most scenarios unfairness problem still exist among the exisiting RL-based CCs. The researchers also point out that exisiting RL-based CCs focusing on capturing available bandiwidth switfly but introducing severe packet losses in normal operation.
 
 In this work, we design our RL-based scheme in the principles of minimal deployment and controlling the queueing delay for better scalability to suit the resource-constrained and massive amount devices in IoT networks. We propose Receiver-guided RL-based (RGRL) CC for IoT. RGRL works on top of Additive Increase mechanism CC e.g., NewReno to estimate the network state from the receiver to adjust sender CWND by exchanging information in modified TCP header.
 
 \section{Related Works}
-This part is to be completed.
+\subsection{Congestion Control in IoT}
+
+
+\subsection{Reinforcement Learning-based Congestion Control}
 
 \begin{figure}[h]
 \centering
@@ -198,7 +204,6 @@ Our proposal is designed to be receiver-guided, and not blocking normal TCP beha
 
 
 \subsection{Enable Receiver-Guided for TCP}
-
 \subsubsection{Control Message}
 The receiver TCP socket is extended to support communication with the RL agent. In our design, generating an observation and an action are decoupled to ensure the packet communication will not be blocked by the agent inferrence. We define three types of control messages as following:
 

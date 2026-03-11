@@ -20,8 +20,23 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
+\bibitem{jain2022congestion}
+V.~K. Jain, A.~P. Mazumdar, P.~Faruki, and M.~C. Govil, ``Congestion control in internet of things: Classification, challenges, and future directions,'' \emph{Sustainable Computing: Informatics and Systems}, vol.~35, p. 100678, 2022.
+
+\bibitem{anitha2024comprehensive}
+P.~Anitha, H.~Vimala, and J.~Shreyas, ``Comprehensive review on congestion detection, alleviation, and control for iot networks,'' \emph{Journal of Network and Computer Applications}, vol. 221, p. 103749, 2024.
+
+\bibitem{nguyen20216g}
+D.~C. Nguyen, M.~Ding, P.~N. Pathirana, A.~Seneviratne, J.~Li, D.~Niyato, O.~Dobre, and H.~V. Poor, ``6g internet of things: A comprehensive survey,'' \emph{IEEE Internet of Things Journal}, vol.~9, no.~1, pp. 359--383, 2021.
+
 \bibitem{betzler2016coap}
 A.~Betzler, C.~Gomez, I.~Demirkol, and J.~Paradells, ``Coap congestion control for the internet of things,'' \emph{IEEE Communications Magazine}, vol.~54, no.~7, pp. 154--160, 2016.
+
+\bibitem{mogensen2021empirical}
+R.~S. Mogensen, I.~Rodriguez, G.~Berardinelli, G.~Pocovi, and T.~Kolding, ``Empirical iiot data traffic analysis and comparison to 3gpp 5g models,'' in \emph{2021 IEEE 94th Vehicular Technology Conference (VTC2021-Fall)}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2021, pp. 1--7.
+
+\bibitem{raunholt2021towards}
+T.~Raunholt, I.~Rodriguez, P.~Mogensen, and M.~Larsen, ``Towards a 5g mobile edge cloud planner for autonomous mobile robots,'' in \emph{2021 IEEE 94th Vehicular Technology Conference (VTC2021-Fall)}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2021, pp. 01--05.
 
 \bibitem{gomez2018tcp}
 C.~Gomez, A.~Arcia-Moret, and J.~Crowcroft, ``Tcp in the internet of things: From ostracism to prominence,'' \emph{IEEE Internet Computing}, vol.~22, no.~1, pp. 29--41, 2018.
@@ -64,5 +79,25 @@ S.~Abbasloo, C.-Y. Yen, and H.~J. Chao, ``Classic meets modern: A pragmatic lear
 
 \bibitem{giacomoni2024reinforcement}
 L.~Giacomoni and G.~Parisis, ``Reinforcement learning-based congestion control: A systematic evaluation of fairness, efficiency and responsiveness,'' in \emph{IEEE INFOCOM 2024-IEEE Conference on Computer Communications}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2024, pp. 1451--1460.
+
+\bibitem{metzger2019modeling}
+F.~Metzger, T.~Ho{\ss}feld, A.~Bauer, S.~Kounev, and P.~E. Heegaard, ``Modeling of aggregated iot traffic and its application to an iot cloud,'' \emph{Proceedings of the IEEE}, vol. 107, no.~4, pp. 679--694, 2019.
+
+\bibitem{nie2019dynamic}
+X.~Nie, Y.~Zhao, Z.~Li, G.~Chen, K.~Sui, J.~Zhang, Z.~Ye, and D.~Pei, ``Dynamic tcp initial windows and congestion control schemes through reinforcement learning,'' \emph{IEEE Journal on Selected Areas in Communications}, vol.~37, no.~6, pp. 1231--1247, 2019.
+
+\bibitem{tian2022spine}
+H.~Tian, X.~Liao, C.~Zeng, J.~Zhang, and K.~Chen, ``Spine: An efficient drl-based congestion control with ultra-low overhead,'' in \emph{Proceedings of the 18th international conference on emerging networking experiments and technologies}, 2022, pp. 261--275.
+
+\bibitem{yen2023computers}
+C.-Y. Yen, S.~Abbasloo, and H.~J. Chao, ``Computers can learn from the heuristic designs and master internet congestion control,'' in \emph{Proceedings of the ACM SIGCOMM 2023 Conference}, 2023, pp. 255--274.
+
+\bibitem{navarro2020survey}
+J.~Navarro-Ortiz, P.~Romero-Diaz, S.~Sendra, P.~Ameigeiras, J.~J. Ramos-Munoz, and J.~M. Lopez-Soler, ``A survey on 5g usage scenarios and traffic models,'' \emph{IEEE Communications Surveys \& Tutorials}, vol.~22, no.~2, pp. 905--929, 2020.
+
+\bibitem{3gpp_r2100204}
+\BIBentryALTinterwordspacing
+{3GPP}, ``Traffic model for m2m services,'' TSG-RAN WG2 Meeting \#68-bis, document R2-100204, Sophia Antipolis, France, Jan. 2010. [Online]. Available: \url{http://www.3gpp.org/ftp/tsg_ran/WG2_RL2/TSGR2_68bis/docs/R2-100204.zip}
+\BIBentrySTDinterwordspacing
 
 \end{thebibliography}

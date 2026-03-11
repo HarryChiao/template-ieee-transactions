@@ -67,6 +67,7 @@
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
 % \usepackage{graphicx}
 \usepackage{subcaption}
+\usepackage{url}
 
 
 \begin{document}
@@ -77,7 +78,7 @@
 % not capitalized unless they are the first or last word of the title.
 % Linebreaks \\ can be used within to get better formatting as desired.
 % Do not put math or special symbols in the title.
-\title{Receiver-Guided Reinforcement Learning-based Congestion Control for IoT}
+\title{Receiver-Guided Reinforcement Learning-based Congestion Control for IoT network}
 %
 %
 % author names and IEEE memberships
@@ -95,20 +96,6 @@ and~Lotfi~Mhamdi,~\IEEEmembership{Senior Member,~IEEE}%
 \thanks{Qihang Jiao and Lotfi Mhamdi are with the School of Electronic and Electrical Engineering, University of Leeds, Leeds, UK (e-mail: el22qj@leeds.ac.uk; L.Mhamdi@leeds.ac.uk).}%
 \thanks{Lotfi Mhamdi is also with the College of Computing \& Systems, Abdullah Al Salem University, Kuwait (e-mail: lotfi.mhamdi@aasu.edu.kw).}
 }
-%                     ^------------^------------^----Do not want these spaces!
-%
-% a space would be appended to the last name and could cause every name on that
-% line to be shifted left slightly. This is one of those "LaTeX things". For
-% instance, "\textbf{A} \textbf{B}" will typeset as "A B" not "AB". To get
-% "AB" then you have to do: "\textbf{A}\textbf{B}"
-% \thanks is no different in this regard, so shield the last } of each \thanks
-% that ends a line with a % and do not let a space in before the next \thanks.
-% Spaces after \IEEEmembership other than the last one are OK (and needed) as
-% you are supposed to have spaces between the names. For what it is worth,
-% this is a minor point as most people would not even notice if the said evil
-% space somehow managed to creep in.
-
-
 
 % The paper headers
 % \markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
@@ -144,12 +131,13 @@ and~Lotfi~Mhamdi,~\IEEEmembership{Senior Member,~IEEE}%
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
 \begin{abstract}
-The abstract goes here.
+Internet of Things (IoT) have been widely deployed and remains a growing trend in the globe. Connection techniques are improved leading to the massive IoT connected to the network and generating nuemerous data. Most of IoT devices send data following client-server manner where massive data are processed centrually. For reliability sensitive applications e.g., autonomous mobile robot control and quality assurance require TCP accompanied with congestion control (CC). In particular, the manner in which IoT devices generate traffic can be categorised into periodic and aperiodic according to different application scenarios. Exisiting CC algorithms have been widely researched by approaching different congestion indicator e.g., loss, delay, and bandwidth delay product (BDP). Loss-based CCs are the most favoured whilist they are pointed out exacerbating the queueing in the intermediate node. Other CCs are still under estimations before deployment. Reliable CC researches that able to alleviate congestion for massive flows are accomplished in data centre considering different charateristics from IoT scenarios, e.g., base RTT and traffic charateristics. Reinforcement Learning (RL) has been widely explored and considered able to generate better CC for most cases. However, existing CC researches are not sufficiently evaluated considering IoT networks.
+We evaluated exisiting CC schemes in IoT networks considering IoT traffics and implemented a receiver-guided congestion control (RGRL) using Reinforcement Learning.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-IoT, TCP, congestion control, reinforcement learning.
+IoT, TCP, Congestion Control, Reinforcement Learning.
 \end{IEEEkeywords}
 
 
@@ -168,29 +156,40 @@ IoT, TCP, congestion control, reinforcement learning.
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-\IEEEPARstart{I}{}nternet of Things (IoTs) has been widely deployed with the improving advantages of wireless communications. Ubiquitous sensing and computing capabilities provided by heterogeneous physical objects motivates the emergence of applications requiring varied data. The applications include transportation, industrial automation, emergency response. At the present when computation capability is highly demanded and increased, IoT is inevitably becoming the integral part of the future Internet. However, with the heterogeneous physical objects connected to the Internet, massive data are generated and transmitted in to network leading to severe network congestion. The network congestion from massive devices introduces the challenge in terms of reliability, latency, and fairness which are critical for applications requiring a high quality of service (QoS). With the expending device connections, 
-network lifespan, connection quality, control overhead, and the heterogenity are also introduced challenge to traditional technology. An IoT device is usually considered resource-constrained that leads to energy consumption as an important factor affecting the network scalability.
+\IEEEPARstart{I}{}nternet of Things (IoTs) have been widely deployed with the improving advantages of connection techniques. Ubiquitous sensing and computing capabilities provided by heterogeneous physical objects motivates the emergence of applications requiring varied data. The applications include transportation, industrial automation, emergency response. At the present when computation capability is highly demanded and increased, IoT is inevitably becoming the integral part of the future Internet. However, with the heterogeneous physical objects connected to the Internet, massive data are generated and transmitted in to network leading to severe network congestion. The network congestion from massive devices introduces the challenge in terms of reliability, latency, and fairness which are critical for applications requiring a high quality of service (QoS). With the expending device connections, 
+network lifespan, connection quality, control overhead, and the heterogenity are also introduced challenge to traditional technology. An IoT device is usually considered resource-constrained that leads to energy consumption as an important factor affecting the network scalability \cite{jain2022congestion, anitha2024comprehensive, nguyen20216g}.
 
 For the energy efficient and reliable data transmission, congestion control (CC) over lightweight UDP-based protocol CoAP has been proposed \cite{betzler2016coap}.
-However, UDP is suspected with its network safety problem and managed strictly by corporate firewalls. Therefore, UDP-based protocols cannot satisfy cross domain schenarios leaving the need of TCP in IoT networks \cite{gomez2018tcp,kumar2020performant,mhamdi2023congestion}. As IoT network is proposed to be a component to the futrue Internet that requires it to communicate across types of domains, exisiting CC performance needs to be further researched in IoT.
+However, UDP is suspected with its network safety problem and managed strictly by corporate firewalls. 
+Therefore, UDP-based protocols cannot satisfy cross domain scenarios. For scenarios demanding high reliability, high proportion of TCP usage is observed in the recent investigation especially for autonomous mobile robot along with quality assurance in production \cite{mogensen2021empirical, raunholt2021towards}. Those requirements to network performance in traditional network that also applied to IoT, remains the diversity in choosing transport protocol \cite{gomez2018tcp,kumar2020performant,mhamdi2023congestion}. 
+As IoT network is proposed to be a component to the futrue Internet, exisiting CC performance needs to be further researched in IoT.
 
-Conventional CCs relies on loss as congestion indicator, e.g., NewReno \cite{floyd2004newreno} and Cubic \cite{ha2008cubic}. They are mainly used for TCP/IP stack devices and has proven their reliable capability after decades. They are not optimal in multiple senders scenario in terms of RTT and fairness, as they rely on greedy increment to CWND to probe the available bandwidth. Therefore, a buffer in the network must be overflowed frequently to indicate a congestion occurance for senders to multiplicative decrease their CWND. This ensure the avaiability of bandwidth at the cost of queue build up, resulting a high RTT and different share of bandwidth among the traffics. Latency-based CCs, e.g.,  \cite{brakmo1994tcp} are designed to measure a minimal RTT while they face the challenge of obtaining the global minimal RTT when the network is congested by the greedy loss-based CCs. A hybrid CC, BBR \cite{cardwell2017bbr} is being highly focused which periodically probes the maximum available bandwidth and the minimal RTT to measure the bandwidth delay product (BDP).
+Conventional CCs relies on loss as congestion indicator, e.g., NewReno \cite{floyd2004newreno} and Cubic \cite{ha2008cubic}. They are mainly used for TCP/IP stack devices and has proven their reliable capability after decades. They are not optimal in multiple senders scenario in terms of RTT and fairness, as they rely on greedy increment to $cwnd$ to probe the available bandwidth. Therefore, a buffer in the network must be overflowed frequently to indicate a congestion occurance for senders to multiplicative decrease their $cwnd$. This ensure the avaiability of bandwidth at the cost of queue build up, resulting a high RTT and different share of bandwidth among the traffics. Latency-based CCs, e.g.,  \cite{brakmo1994tcp} are designed to measure a minimal RTT while they face the challenge of obtaining the global minimal RTT when the network is congested by the greedy loss-based CCs. A hybrid CC, BBR \cite{cardwell2017bbr} is being highly focused which periodically probes the maximum available bandwidth and the minimal RTT to measure the bandwidth delay product (BDP).
 
-Abundant CC schemes optimised for large scale of traffics are accomplished in data centre networks, where the base RTT is much lower than IoT networks, e.g., hundreds of microseconds \cite{alizadeh2010data}. In DCTCP the researchers utilise explicit congestion notification (ECN) marking to make the TCP sender response to the congestion with a adaptive extent to achieve a better fairness and low latency for senders of larger scales. DCTCP accomplished a lower flow completion time compared to traditional TCP. However, DCTCP is specified for data centre is not claimed to apply to wider network like IoT networks. In SAB \cite{zhang2013sharing}, the researchers achieve a better fairness with lower queueing delay in the circumstance that when bottleneck buffer size is larger bandwidth delay product (BDP). However, their proposal requires massive modifications to the intermediate nodes. For a service through the internet, the intermediate nodes that forms a backlog is hard to obtain, along with the requirement of the suitable buffer size should be determined according to the BDP in the network.
+Abundant CC schemes optimised for large scale of traffics are accomplished in data centre networks, where the base RTT is much lower than IoT networks, e.g., hundreds of microseconds \cite{alizadeh2010data}. In DCTCP the researchers utilise explicit congestion notification (ECN) marking to make the TCP sender response to the congestion with a adaptive extent to achieve a better fairness and low latency for senders of larger scales. DCTCP accomplished a lower flow completion time compared to traditional TCP. However, DCTCP is specified for data centre where the base RTT is only several microseconds indicating a very rapid congestion control loop. The researchers mentioned DCTCP is not claimed to apply to wider network like IoT networks. In SAB \cite{zhang2013sharing}, the researchers achieve a better fairness with lower queueing delay in the circumstance that when bottleneck buffer size is larger bandwidth delay product (BDP). However, their proposal requires massive modifications to the intermediate nodes. For a service through the internet, the intermediate nodes that forms a backlog is hard to obtain, along with the requirement of the suitable buffer size should be determined according to the BDP in the network.
 
 Reinforcement Learning (RL) is considered a potential solution to the dynamic environment by learning a policy to interact with the environment.
-QTCP \cite{li2018qtcp} leverages Q-Learning to control sender CWND reling on the difference between a defined utility function value of the latest two steps.
+QTCP \cite{li2018qtcp} leverages Q-Learning to control sender $cwnd$ reling on the difference between a defined utility function value of the latest two steps.
 Aurora \cite{jay2019deep} is described as a framework extended from PCC \cite{dong2018pcc}, where the researchers introduce neural network in their RL design aim to make CC adapt to varying network scenarios. Fairness, multiple objectives, and adaptation to dynamic network conditions remain the key challenges in RL-based CCs.
 Orca \cite{abbasloo2020classic} is trained in a hybrid scheme that employs both advanced DRL and classic CCs. They demonstrate the RL-based schemes challenges are converge to bandwidth, performances issues over unseen conditions, and computation overhead.
 It is observed in \cite{giacomoni2024reinforcement} that in most scenarios unfairness problem still exist among the exisiting RL-based CCs. The researchers also point out that exisiting RL-based CCs focusing on capturing available bandiwidth switfly but introducing severe packet losses in normal operation.
 
-In this work, we design our RL-based scheme in the principles of minimal deployment and controlling the queueing delay for better scalability to suit the resource-constrained and massive amount devices in IoT networks. We propose Receiver-guided RL-based (RGRL) CC for IoT. RGRL works on top of Additive Increase mechanism CC e.g., NewReno to estimate the network state from the receiver to adjust sender CWND by exchanging information in modified TCP header.
+In this work, we design our RL-based scheme in the principles of minimal deployment and controlling the queueing delay for better scalability to suit the resource-constrained and massive amount devices in IoT networks. We propose Receiver-guided RL-based (RGRL) CC for IoT. RGRL works on top of additive increase multiplicative (AIMD) decrease mechanism CC e.g., NewReno to estimate the network state from the receiver to adjust sender $cwnd$ by exchanging information in modified TCP header.
 
 \section{Related Works}
-\subsection{Congestion Control in IoT}
+\subsection{Reliable Communications and Data Traffic in IoT}
+Data traffic in IoT scenario has been investigated in industry \cite{mogensen2021empirical}. The researchers investigate packet size and packet inter-arrival time distribution from three different cases, unit test cell, visual insepction cell, and autonomous mobile robot. It is observed that TCP is mainly used in autonomous mobile robot, particularly, in fleet manager mode and manual controller mode. Within the scope of 5G IIoT, they mentioned typical traffics used for standard research are categorised into periodic and aperiodic.
 
+A more detailed analysis is conducted in \cite{metzger2019modeling}. The researchers specify their considered IoT scenario as a client-server manner where a large number of devices collecting data to be aggregated centrally. Scalability is turn to a challenge in this case, especially when the number of devices grows exponentially in an architecture where brokers and gateways can be placed dynamically.
+They analysed the this aggregated traffics as aysnchornous periodic traffic and compared it with standard possionian traffic. They mixed ayschornous periodic traffic with 10\% possionian traffic and varied the nodes number generating periodic traffic. It is observed that the cumulative distribution function of the mixed traffic is far different from the pure possionian traffic when the number of nodes is low, but perform similar when the node number is higher.
 
 \subsection{Reinforcement Learning-based Congestion Control}
+% RL-based TCP -> drawback observed
+Reinforcement Learning (RL) involves agents learning to interact with an environment to maximise a long-term objective. With the use of function approximator e.g., neural network and nuemerous experience from extensive training, RL has potential to learn an algorithm better than pre-defined rules for many applications. RL-based CCs are researched out of the prospect to extend RL capabilities into optimising network performances.
+
+QTCP \cite{li2018qtcp} leverages Q-learning to directly change the $cwnd$. They use their own defined utility function and assign fixed reward according to the change of the utility value. In PCC \cite{dong2018pcc}, the researchers introduced online-learning to rate control to solve the problem that the conventional CCs preformance impaired. They attribute this impairment to human defined model failed to reflect the complexity of networks. Aurora \cite{jay2019deep} modeled the process using deep RL method, particularly, PPO to conduct their CC to Internet. TCP-RL \cite{nie2019dynamic} is implemented using RL to dynamically configure initial window and CC algorithm as they formulate the problem of CC that unnecessary time experienced for growing $cwnd$ and performance varies in different network conditions. Orca \cite{abbasloo2020classic} demonstrate a RL-based framwork where a monitor block cooperate with an agent to output a change to $cwnd$ to underlying TCP CC periodically. Their scheme is capable to compatible to any existing CC. SPINE \cite{tian2022spine} improves the control granularity and lower the computation overhead by introducing hierarchical design. Sage \cite{yen2023computers} introduces offline RL with sufficient training to generalise the performance improvment for praticality in Internet. RL-based CC remain imperfect performance in terms of fairness, efficiency, and generalisation \cite{giacomoni2024reinforcement}.
+
+Few works discussed the TCP performance in the scope of IoT network where nuemerous devices generating massive data. In this work, we discuss exisiting TCP performance in IoT scenario and propose our work RGRL with a RL framework to improve the scalability of CC for IoT networks. We consider practicality in our design by introducing receiver-guided scheme and tested with IoT specified traffic model.
 
 \begin{figure}[h]
 \centering
@@ -199,34 +198,29 @@ In this work, we design our RL-based scheme in the principles of minimal deploym
 \label{SysArch}
 \end{figure}
 
+
+\section{IoT Traffic Model}
+\label{sec:traffic}
+For evaluating exisiting CCs performance in IoT scenario and explore their scalability, specific traffic model is required. We considered the common scenarios in CC research client-server scenario as in \cite{metzger2019modeling}, where a large number of devices generating data to be aggregated centrally. A common traffic pattern is periodic traffic generated using Equation.~\ref{eq:periodic}, where $s_{i,k}$ denotes the moment when a message is generated by device $i$ in period $k$.
+
+\begin{equation}
+  s_{i,k} = t_i+kT_i, \quad k \in \mathbb{N}
+  \label{eq:periodic}
+\end{equation}
+
+Event-based IoT application is also usually used. For simulating this scenario, they behave as aperiodic traffic and are approximated using Poisson process. Therefore, aperiodic traffics are simulated by sampling their inter-arrival time ($\Delta s$) according to Equation.~\ref{eq:aperiodic}.
+
+\begin{equation}
+  \Delta s \sim \mathrm{Exp}(\lambda)
+  \label{eq:aperiodic}
+\end{equation}
+
+Under the definitions of 5G, \cite{navarro2020survey} summarises traffic charateristics comprehensively of 3GPP definitions. Various parameters are included in \cite{navarro2020survey} including the bytes in a session, which we refer to as message size in our work. It is mentioned for smart metering, point of sale, and home automation, a message is small, i.e., having only several bytes. However, for fleet management, telemedicine, a message are in the order of KBs. For environment monitoring and control, it is mentioned that a message can have several MBs, which triggers us to consider the flow completion time considering the message in the order of KBs. We emphasise the importance of minimising the tail flow completion time (FCT) that lower tail FCT can benefit the information from devices to be delivered on time enhancing the performance of IoT application. Considering a long flow completion time, the data collected from the devices may not reflect the actual state of the device and causes information lags for IoT applications. Therefore, for supporting larger data than few KBs for IoT applications, we consider CCs performance under larger messages. The earliest definitions of traffic charateristics according to applications can be found in \cite{3gpp_r2100204}.
+
+% \section{Adaptive sawtooth to enhance TCP scalability}
+
 \section{System Design}
 Our proposal is designed to be receiver-guided, and not blocking normal TCP behaviour. Therefore, we extended and modified the standard TCP to exchange message between receiver and sender, as well as between the receiver and agent. We introduce our control message design and the information exchange mechanism to enable receiver-guided congestion control for TCP. Then we present three modules in the receiver side for adjusting sender $cwnd$ relying on the receiver-guided method i.e., Receiver Measurement Module, Window Decision Module, and Window Enforcement Module.
-
-
-\subsection{Enable Receiver-Guided for TCP}
-\subsubsection{Control Message}
-The receiver TCP socket is extended to support communication with the RL agent. In our design, generating an observation and an action are decoupled to ensure the packet communication will not be blocked by the agent inferrence. We define three types of control messages as following:
-
-\begin{itemize}
-    \item \textbf{Observation Message}: carries the observed network status and is sent to the agent for storage in the replay buffer.
-    
-    \item \textbf{Action Request}: triggers the agent to infer and return a control action based on the current state.
-    
-    \item \textbf{Connection Close}: notifies the agent that a flow has terminated, allowing it to clear the corresponding internal states.
-\end{itemize}
-
-\subsubsection{Exchange information through Modified TCP}
-We utilise the window size field in TCP header to exchange the information required both by the receiver and the sender. In particular, the sender TCP is modified to include the current $cwnd$ value in the window size field of TCP header. For an enforced $cwnd$, when the receiver TCP receives an control signal from the Window Decision Module, it sets its state as control start, and keeps including the enforced $cwnd$ value into the window size field of ACK with \textbf{ECE}.
-When the sender receives an \textbf{ECE} ACK, it enters a window adjustment phase and overwirtes its current $cwnd$ to the enforced value. During this phase, replicative ACKs with \textbf{ECE} are ignored by the sender. Once the window adjustment is completed, the sender TCP will keep sending \textbf{CWR} packet and exit the window adjustment phase. Then, the receiver will reply with a \textbf{CWR} and both sender and receiver will exit the control phase. By applying the mechanism above, our design can achieve a value exchange that will not be lost due to packet loss that makes it possible for applying to multiple flows.
-
-\subsection{Receiver Measurement Module}
-Our scheme relies on reliable state observations to ensure stable training. Therefore, the states in our design are required to reflect the congestion extent while remaining observable at the receiver. Despite RTT is a fine-grained and valuable indicator of congestion, it is difficult to directly observe in the receiver side.
-
-To address the limitation above, we derive a receiver-side congestion extent metric based on the $cwnd$ elapsed time ($t_{elapsed}$). We extend the sender TCP feature to include its $cwnd$ in TCP header. 
-In standard TCP congestion avoidance, the congestion window $cwnd$ is increased by 1 MSS after an entire $cwnd$ bytes has been acknowledged. This nature results in an approximate growth rate of 1 MSS per RTT, in which the method is named Additive Increment.
-
-We utilise Additive Increment growing feature to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$.
-In particular, upon every packet receive event that includes a $cwnd$ value different from the last value received, the Receiver Measurement Module establishes a new estimation task.
 
 \begin{figure}[!t]
 \centering
@@ -235,7 +229,39 @@ In particular, upon every packet receive event that includes a $cwnd$ value diff
 \label{Estimation}
 \end{figure}
 
-A new task is initialised with a record ($Rec$) for the current flow state and a threshold ($\tau$), e.g., for flow $i$ started at time $t_0$ and estimated at time $t_j$, defined as below:
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{./fig/cwnd.png}
+\caption{CWND behaviour.}
+\label{cwnd}
+\end{figure}
+
+\subsection{Enable Receiver-Guided for TCP}
+\subsubsection{Control Message}
+The receiver TCP socket is extended to support communication with the RL agent. In our design, generating an observation and an action are decoupled to ensure the packet communication will not be blocked by the agent inferrence. We define three types of control messages as following:
+
+\begin{itemize}
+\item \textbf{Observation Message}: carries the observed network state and is stored in the replay buffer.
+
+\item \textbf{Action Request}: requests the agent to infer and return a control action.
+
+\item \textbf{Connection Close}: informs the agent that a flow has terminated so that the corresponding internal state can be cleared.
+\end{itemize}
+
+\subsubsection{Exchange information through Modified TCP}
+We utilise the window size field in TCP header to exchange the information required both by the receiver and the sender. In particular, the sender TCP is modified to include the current $cwnd$ value in the window size field of TCP header. For an enforced $cwnd$, when the receiver TCP receives an control signal from the Window Decision Module, it sets its state as control start, and keeps including the enforced $cwnd$ value into the window size field of ACK with \textbf{ECE}.
+When the sender receives an \textbf{ECE} ACK, it enters a window adjustment phase and overwirtes its current $cwnd$ to the enforced value. During this phase, replicative ACKs with \textbf{ECE} are ignored by the sender so that the enforced value only take effect once in a same phase. Once the window adjustment is completed, the sender TCP will keep sending \textbf{CWR} packet and exit the window adjustment phase. Then, the receiver will reply with a \textbf{CWR} and both sender and receiver will exit the control phase. By applying the mechanism above, our design can achieve a value exchange reliably when encourtering packet loss. The $cwnd$ behaviour of RGRL cooperating with AIMD can be seen in Fig.~\ref{cwnd}.
+
+\subsection{Receiver Measurement Module}
+Our scheme relies on reliable state observations to ensure stable training. Therefore, the states in our design are required to reflect the congestion extent while remaining observable at the receiver. Despite RTT is a fine-grained and valuable indicator of congestion, it is difficult to directly observe in the receiver side.
+
+To address the limitation above, we derive a receiver-side congestion extent metric based on the $cwnd$ elapsed time ($t_{elapsed}$). We extend the sender TCP feature to include its $cwnd$ in TCP header. 
+In standard TCP congestion avoidance, the congestion window $cwnd$ is increased by 1 MSS after an entire $cwnd$ bytes has been acknowledged. This nature results in an approximate growth rate of 1 MSS per RTT, known as additive increase.
+
+We utilise additive increase growing feature to enable the receiver to estimate network congestion extent by calculating the elapsed time for a flow to complete its $cwnd$.
+In particular, upon every packet receive event that includes a $cwnd$ value different from the last value received, the Receiver Measurement Module establishes a new estimation task.
+
+An example of observation message generation can be seen in Fig.~\ref{Estimation}. A new task is initialised with a record ($Rec$) for the current flow state and a threshold ($\tau$), e.g., for flow $i$ started at time $t_0$ and estimated at time $t_j$, defined as below:
 \begin{equation}
   Rec_{i,t_j}\triangleq[B_i(t_j), L_i(t_j), t_j]
 \end{equation} 
@@ -377,33 +403,117 @@ Then $cwnd_{\mu}$ will be included into the ACK header and take effect at the se
 \end{figure}
 
 \section{Simulation setup and results}
-Our scheme is implemented in NS-3 simulator. We set $scaling\_factor$ in Equation.~\ref{eq:cwnd} to 2. With the motivation to improve the performance of multiple flows to one receiver. We set up our topology as shown in Fig.~\ref{multi-to-one}. We compare our scheme with existing CC algorithms, i.e., NewReno, Cubic, and BBR.
+Our scheme is implemented in ns-3.39 simulator. We set $scaling\_factor$ in Equation.~\ref{eq:cwnd} to 2. With the motivation to improve the performance of multiple flows to one receiver, we set up our topology as shown in Fig.~\ref{multi-to-one}. We compare our scheme with existing CC algorithms, i.e., NewReno, Cubic, and BBR.
 
 \begin{figure}[t]
   \centering
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{sim_fig/rtt_compare_all_shaded.png}
-    \caption{RTT}
-    \label{fig:rtt_compare_1}
-  \end{subfigure}
-  \vspace{0.3cm}
   \begin{subfigure}{\linewidth}
     \centering
     \includegraphics[width=\linewidth]{sim_fig/throughput_compare_all_shaded.png}
     \caption{Throughput}
     \label{fig:throughput_compare_1}
   \end{subfigure}
+  \vspace{0.3cm}
+  \begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{sim_fig/rtt_compare_all_shaded.png}
+    \caption{RTT}
+    \label{fig:rtt_compare_1}
+  \end{subfigure}
   \caption{Performance comparison under different bottleneck bandiwdths.}
 \end{figure}
 
+\begin{figure*}
+  \centering
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png}
+    \caption{RGRL}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png}
+    \caption{BBR}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png}
+    \caption{Cubic}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png}
+    \caption{NewReno}
+  \end{subfigure}
+  \caption{Throughput and fairness performance in 3-flow scenario with bandwidth set to 50 Mbps.}
+  \label{fig:Tput_time_50}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png}
+    \caption{RGRL}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png}
+    \caption{BBR}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png}
+    \caption{Cubic}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png}
+    \caption{NewReno}
+  \end{subfigure}
+  \caption{Throughput and fairness performance in 3-flow scenario with bandwidth set to 80 Mbps.}
+  \label{fig:Tput_time_80}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png}
+    \caption{RGRL}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png}
+    \caption{BBR}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png}
+    \caption{Cubic}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.24\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png}
+    \caption{NewReno}
+  \end{subfigure}
+  \caption{Throughput and fairness performance in 3-flow scenario with bandwidth set to 100 Mbps.}
+  \label{fig:Tput_time_100}
+\end{figure*}
+
 \subsection{3-flow scenario}
-In this schenario, we started three flows with a 10s interval. The three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme. We set the bandwidth in our topology respectively as 50 Mbps, 80 Mbps, and 100 Mbps. The base RTT is set to 20 ms in all simulations.
+In this scenario, we started three flows with a 10s interval. In particular, the three flows are active respectively in $[0-50s]$, $[10-40s]$, and $[20-30s]$, in which case we focus on the fairness performance of our scheme. We set the bandwidth in our topology respectively as 50 Mbps, 80 Mbps, and 100 Mbps. The base RTT is set to 20 ms in all simulations.
 
-We trained our agent for 100 episodes where each is a simulation in NS-3. The reward per episode can be seen in Fig.~\ref{fig:episode_reward}. The average throughput and fairness performance of our scheme can be seen in Fig.~\ref{fig:throughput_compare_1}. For the fairness we calculated Jain Index for the three flows in their active period. We can see that out scheme RGRL can have a better fairness than other CC algorithm in all three bandwidth settings, i.e., around 0.98. Meanwhile, it is observed that BBR can achieve 0.88 in 50 Mbps case, which is decreased slightly when the bandwidth is lower, particularly, to 0.83 for 100 Mbps setting. NewReno Jain index is decreased significantly when the bandiwidth is higher, from 0.88 in 50 Mbps to 0.5536 in 100 Mbps. Cubic achieves a good performance, 0.9592 only in 80 Mbps setting while remains lower than 0.80 in other cases. Overall, RGRL advantage is more significant when the bandwidth is higher. 
+We trained our agent for 100 episodes where each episode is a complete simulation in ns-3.39. The reward per episode can be seen in Fig.~\ref{fig:episode_reward}. RGRL can converge its cumulative reward to a certain level different depending on the simulation setting. The difference of reward convergence is due to the bandwidth and base RTT determining the reward distribution for agent since we include power in reward design.
 
-We also present the average RTT of flow for each CC algorithm that can be seen in Fig.~\ref{fig:rtt_compare_1}. Despite Cubic and NewReno achieves satisfying fairness performance in specific setting, they are out of the cost of RTT from recklessly increasing $cwnd$, i.e., over 60 ms for NewReno and at least 59.93 for Cubic among the cases. The latter can achieve even 98.44 ms in 50 Mbps setting. While our scheme can achieve a low average RTT better than BBR in 50 Mbps and 80 Mbps. For the 100 Mbps, our scheme can achieve preferable performance to 33.02 ms similar to BBR's 31.99 ms. In terms of convergence, BBR has problem that one flow can get lower share of the bandwidth that is not significantly shown in jain index but in real time throughput.
-The throughput over time in the three settings can be seen in Fig~\ref{fig:Tput_time_50}, Fig.~\ref{fig:Tput_time_80}, and Fig.~\ref{fig:Tput_time_100}.
+The average throughput and fairness performance of our scheme can be seen in Fig.~\ref{fig:throughput_compare_1}. For the fairness we calculated Jain Index for the three flows in their active period. We can see that our scheme RGRL can have a better fairness than other CC algorithms in all three bandwidth settings, i.e., around 0.98.
+It is observed that BBR can achieve 0.88 in 50 Mbps case, which is decreased slightly when the bandwidth is lower, particularly, to 0.83 for 100 Mbps setting. In terms of the real-time throughput, as shown in Fig.~\ref{fig:Tput_time_100}, BBR flows behave that the later flow dominates the bandwidth and the flow 1 can hardly recover to fully utilise the bandwidth after 10 seconds. BBR flow 1 eventually gets 20.08 Mbps average throughput much lower than other two flows which is not clearly reflected in Jain Index.
+
+NewReno Jain index is decreased significantly when the bandiwidth is higher, from 0.88 in 50 Mbps to 0.5536 in 100 Mbps. For the real-time throughput in Fig.~\ref{fig:Tput_time_50}, NewReno behaves a rapid convergence. Cubic achieves a good performance, 0.9592 only in 80 Mbps setting while remains lower than 0.80 in other cases. The real-time throughput can be seen in Fig.~\ref{fig:Tput_time_80}. RGRL has an advantage in convergence that is more significant when the bandwidth is higher.
+
+RGRL performs better in convergence when bandwidth is higher due to the coarse-grained control from our periodic control design. Particularly, a higher bandwidth results in a larger BDP, which requires a longer time for the $cwnd$ to increase in AIMD and  provides sufficient time before overutilising for RGRL to decrease $cwnd$ to a fairer level.
+
+We also present the average RTT of flow for each CC algorithm that can be seen in Fig.~\ref{fig:rtt_compare_1}. Despite Cubic and NewReno achieves satisfying fairness performance in specific setting, they are out of the cost of RTT from recklessly increasing $cwnd$, i.e., over 60 ms for NewReno and at least 59.93 for Cubic among the cases. The latter can achieve even 98.44 ms in 50 Mbps setting. RGRL can achieve a lower average RTT compared with BBR in 50 Mbps and 80 Mbps. For the 100 Mbps, our scheme can achieve preferable performance to 33.02 ms similar to BBR's 31.99 ms whilist BBR suffers convergence problem shown in real-time throughput comparison in Fig.~\ref{fig:Tput_time_100}.
 
 \begin{figure}[h]
   \centering
@@ -433,169 +543,15 @@ The throughput over time in the three settings can be seen in Fig~\ref{fig:Tput_
   \label{fig:pktloss_30}
 \end{figure}
 
-\subsection{FCT in random flow scenario}
-We also tested random flows for simulating IoT traffic pattern. Therefore, all IoT nodes are set to send messages with the same period. Their first messages are initialised following the uniform distribution within the period. In our setting, the sending period is set to 0.5s. The message are set to 1 MB delivered as packets sized of 1448 bytes. We compared our scheme performance with other CC algorithm in two scenrios, i.e., (i) 50 IoT nodes with 100 Mbps bandwidth wired connection using topology shown as Fig.~\ref{multi-to-one}, and (ii) 30 IoT nodes using WiFi. Both scenrios last for 50 seconds.
+\subsection{Periodic traffic scenario}
+We also tested random flows for simulating IoT traffic pattern using periodic traffic scenario. Therefore, all IoT nodes are set to send messages with the same period. Their first messages are initialised following the uniform distribution within the period. In our setting, the sending period is set to 0.5s. The messages are set to 1 MB delivered as packets sized of 1448 bytes. We compared our scheme performance with other CC algorithm in two scenarios, i.e., (i) 50 IoT nodes with 100 Mbps bandwidth wired connection using topology shown as Fig.~\ref{multi-to-one}, and (ii) 30 IoT nodes using WiFi. Both scenarios last for 50 seconds.
 
-In scenario (i), we compare the flow completion time (FCT) shown as in Fig.~\ref{fig:fct_50} where the best performances are highlighted. Our scheme has the lowest FCT at P90 and P95 reducing the tail latency. Despite other CC algorithms have lower FCT at P50, they are out of cost of more packet losses hurting the communication reliability. Our scheme has the least packets losses with lower tail latency.
+In scenario (i), we compare the flow completion time (FCT) shown as in Fig.~\ref{fig:fct_50} where the best performances are highlighted. Our scheme has the lowest FCT at P90 and P95 reducing the tail latency. In terms of P50 performance, our scheme RGRL achieves to the level close to Cubic and NewReno which are mainly used in network today. Despite other CC algorithms have lower FCT at P50, they are out of cost of more packet losses hurting the communication reliability. The packet losses of each scheme can be seen in Fig.~\ref{fig:pktloss_50}. Our scheme has the least packets losses with the lowest tail latency. 
 
-In scenario (ii), the FCT is shown in Fig.~\ref{fig:fct_30}.
+In scenario (ii), the FCT is shown in Fig.~\ref{fig:fct_30}. RGRL still performs the lowest FCT at P95 and P99, 3.803s and 5.056s. And RGRL has P50 performance, 2.356s better than Cubic and NewReno but slightly higher than BBR, 1.719s. A difference from scenario (i) is observed that BBR achieves much worse performance at P95, 8.155s much higher than other CCs that achieve a value around 4s. BBR also has the extreme high FCT at P99, 14.270s compared to other CCs that achieve around 5s. BBR can not guarantee a sufficient low tail latency in periodic traffics scenario. Also, it is observed that RGRL has the least packet loss compared to other CCs as shown in Fig.~\ref{fig:pktloss_30}. BBR suffers significant packet losses compared to other CCs in this scenario which indicates more retransmissions for IoT devices that exhasting the energy consumption.
 
-% \begin{figure}[t]
-%   \centering
-%   \begin{subfigure}{\linewidth}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_50.png}
-%     \caption{Bottleneck bandwidth = 50 Mbps}
-%   \end{subfigure}
-%   \vspace{0.3cm}
-%   \begin{subfigure}{\linewidth}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_80.png}
-%     \caption{Bottleneck bandwidth = 80 Mbps}
-%   \end{subfigure}
-%   \vspace{0.3cm}
-%   \begin{subfigure}{\linewidth}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{./sim_fig/throughput_compare_100.png}
-%     \caption{Bottleneck bandwidth = 100 Mbps}
-%   \end{subfigure}
-%   \caption{Throughput comparison under different bottleneck bandwidths.}
-%   \label{fig:throughput_compare}
-% \end{figure}
-
-% \begin{figure}[t]
-%   \centering
-%   \includegraphics[width=\linewidth]{sim_fig/throughput_compare_all_shaded.png}
-%   \caption{Throughput comparison under different bottleneck bandwidths.}
-%   \label{fig:throughput_compare}
-% \end{figure}
-
-% \begin{figure}[t]
-%   \centering
-%   \includegraphics[width=\linewidth]{sim_fig/rtt_compare_all_shaded.png}
-%   \caption{RTT comparison under different bottleneck bandwidths.}
-%   \label{fig:rtt_compare}
-% \end{figure}
-
-% \begin{figure}[t]
-%   \centering
-%   \begin{subfigure}{\linewidth}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{./sim_fig/rtt_compare_50.png}
-%     \caption{Bottleneck bandwidth = 50 Mbps}
-%   \end{subfigure}
-%   \vspace{0.3cm}
-%   \begin{subfigure}{\linewidth}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{./sim_fig/rtt_compare_80.png}
-%     \caption{Bottleneck bandwidth = 80 Mbps}
-%   \end{subfigure}
-%   \vspace{0.3cm}
-%   \begin{subfigure}{\linewidth}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{./sim_fig/rtt_compare_100.png}
-%     \caption{Bottleneck bandwidth = 100 Mbps}
-%   \end{subfigure}
-%   \caption{RTT comparison under different bottleneck bandwidths.}
-%   \label{fig:rtt_compare}
-% \end{figure}
-
-\begin{figure*}
-  \centering
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-RGRL/14-02-2026-04-21-45(50)/1_throughput_and_jain.png}
-    \caption{RGRL}
-  \end{subfigure}
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-BBR/13-02-2026-04-24-03(50)/1_throughput_and_jain.png}
-    \caption{BBR}
-  \end{subfigure}
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-Cubic/13-02-2026-04-27-10(50)/1_throughput_and_jain.png}
-    \caption{Cubic}
-  \end{subfigure}
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-NewReno/13-02-2026-04-29-20(50)/1_throughput_and_jain.png}
-    \caption{NewReno}
-  \end{subfigure}
-  \caption{Throughput and fairness performance of our scheme and baselines in 3-flow scenario with bandwidth set to 50 Mbps.}
-  \label{fig:Tput_time_50}
-\end{figure*}
-
-\begin{figure*}
-  \centering
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-RGRL/14-02-2026-12-35-21(80)/1_throughput_and_jain.png}
-    \caption{RGRL}
-  \end{subfigure}
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-BBR/15-02-2026-12-42-40(80)/1_throughput_and_jain.png}
-    \caption{BBR}
-  \end{subfigure}
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-Cubic/15-02-2026-12-41-36(80)/1_throughput_and_jain.png}
-    \caption{Cubic}
-  \end{subfigure}
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-NewReno/15-02-2026-12-40-50(80)/1_throughput_and_jain.png}
-    \caption{NewReno}
-  \end{subfigure}
-  \caption{Throughput and fairness performance of our scheme and baselines in 3-flow scenario with bandwidth set to 80 Mbps.}
-  \label{fig:Tput_time_80}
-\end{figure*}
-
-\begin{figure*}
-  \centering
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-RGRL/26-01-2026-11-35-56(100)/1_throughput_and_jain.png}
-    \caption{RGRL}
-  \end{subfigure}
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-BBR/13-02-2026-04-23-37(100)/1_throughput_and_jain.png}
-    \caption{BBR}
-  \end{subfigure}
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-Cubic/13-02-2026-04-26-38(100)/1_throughput_and_jain.png}
-    \caption{Cubic}
-  \end{subfigure}
-  \begin{subfigure}[h]{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{./sim_fig/3-flow-NewReno/13-02-2026-04-28-47(100)/1_throughput_and_jain.png}
-    \caption{NewReno}
-  \end{subfigure}
-  \caption{Throughput and fairness performance of our scheme and baselines in 3-flow scenario with bandwidth set to 100 Mbps.}
-  \label{fig:Tput_time_100}
-\end{figure*}
-
-%\begin{table}[!t]
-%% increase table row spacing, adjust to taste
-%\renewcommand{\arraystretch}{1.3}
-% if using array.sty, it might be a good idea to tweak the value of
-% \extrarowheight as needed to properly center the text within the cells
-%\caption{An Example of a Table}
-%\label{table_example}
-%\centering
-%% Some packages, such as MDW tools, offer better commands for making tables
-%% than the plain LaTeX2e tabular which is used here.
-%\begin{tabular}{|c||c|}
-%\hline
-%One & Two\\
-%\hline
-%Three & Four\\
-%\hline
-%\end{tabular}
-%\end{table}
+\subsection{Mixed traffic scenario}
+We then test our scheme considering event-based application traffics mixed with periodic traffics. To simulate mixed traffics, we set 10 nodes to send message with an interval time sampling according to Equation.~\ref{eq:aperiodic} with $\frac{1}{\lambda}=1.125s$ and 40 nodes to generate periodic traffic every 0.5 seconds. Such that the message rate from event-based application account for 10\% of the total message rate.
 
 \section{Conclusion}
 The conclusion goes here.

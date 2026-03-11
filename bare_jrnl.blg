@@ -14,45 +14,45 @@ Database file #1: references.bib
 Warning--missing institution in floyd2004newreno
 
 Done.
-You've used 15 entries,
+You've used 26 entries,
             4087 wiz_defined-function locations,
-            916 strings with 10579 characters,
-and the built_in function-call counts, 13703 in all, are:
-= -- 1084
-> -- 363
-< -- 132
-+ -- 198
-- -- 61
-* -- 678
-:= -- 1942
-add.period$ -- 32
-call.type$ -- 15
-change.case$ -- 15
-chr.to.int$ -- 312
-cite$ -- 16
-duplicate$ -- 938
-empty$ -- 1066
-format.name$ -- 76
-if$ -- 3213
+            977 strings with 13104 characters,
+and the built_in function-call counts, 23382 in all, are:
+= -- 1866
+> -- 641
+< -- 212
++ -- 346
+- -- 113
+* -- 1142
+:= -- 3321
+add.period$ -- 56
+call.type$ -- 26
+change.case$ -- 26
+chr.to.int$ -- 492
+cite$ -- 27
+duplicate$ -- 1625
+empty$ -- 1817
+format.name$ -- 138
+if$ -- 5501
 int.to.chr$ -- 0
-int.to.str$ -- 15
-missing$ -- 167
-newline$ -- 68
-num.names$ -- 15
-pop$ -- 383
+int.to.str$ -- 26
+missing$ -- 293
+newline$ -- 103
+num.names$ -- 26
+pop$ -- 679
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 1047
+skip$ -- 1800
 stack$ -- 0
-substring$ -- 743
-swap$ -- 814
-text.length$ -- 28
+substring$ -- 1198
+swap$ -- 1399
+text.length$ -- 48
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 15
+type$ -- 26
 warning$ -- 1
-while$ -- 71
-width$ -- 17
-write$ -- 170
+while$ -- 116
+width$ -- 28
+write$ -- 282
 (There was 1 warning)
